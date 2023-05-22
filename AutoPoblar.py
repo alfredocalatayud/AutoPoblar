@@ -12,7 +12,9 @@ K_DELETE = "./static/delete.txt"
 INSERTS1 = ["usuarios.sql", "categorias.sql", "clientes.sql", "direcciones.sql", "empleados.sql", "vendedores.sql",
            "productos.sql", "transportes.sql", "tarjetas.sql"]
 
-INSERTS2 = ["listas.sql", "lineas_pedidos.sql", "listas_producto.sql", "mensajes.sql", "mensajes_archivados.sql", "chats.sql", "chats_archivados.sql", "valoraciones.sql"]
+INSERTS2 = ["listas.sql", "lineas_pedidos.sql", "chats.sql", "chats_archivados.sql", "valoraciones.sql"]
+
+INSERTS3 = ["listas_producto.sql", "mensajes.sql", "mensajes_archivados.sql"]
 
 def run_query(querys, db_user, db_name, db_pass):
     conn = mysql.connector.connect(host=DB_HOST, user=db_user, passwd=db_pass, database=db_name)
@@ -72,13 +74,10 @@ def insertar(db_user, db_name, db_pass, inserts):
 
     for tabla in inserts:
         print('Insertando ' + tabla + '...')
-        # comando = 'mysql -h ' + DB_HOST + ' -u ' + db_user + ' -p\'' + db_pass + '\' ' + db_name + ' < ' + tabla + ' > /dev/null'
-        # os.system(comando)
         ttabla = "./SQL/" + tabla
 
         fd = open(ttabla, encoding="latin-1")
         archivosql = fd.read()
-        # sqlcommands = re.split(';', archivosql)
         sqlcommands = [elemento + ';' for elemento in archivosql.split(';')]
         sqlcommands.pop()
 
@@ -128,15 +127,21 @@ def main():
         gen_insert_pedido.main(db_user, db_name, db_pass)
         insertar(db_user, db_name, db_pass, ["pedidos.sql"])
 
-        gen_insert_lista_producto.main(db_user, db_name, db_pass)
         gen_insert_lineas_pedidos.main(db_user, db_name, db_pass)
+
+        insertar(db_user, db_name, db_pass, INSERTS2)
+
+        gen_insert_lista_producto.main(db_user, db_name, db_pass)
         gen_insert_mensajes_archivados.main(db_user, db_name, db_pass)
         gen_insert_mensajes.main(db_user, db_name, db_pass)
 
-        insertar(db_user, db_name, db_pass, INSERTS2)
+        insertar(db_user, db_name, db_pass, INSERTS3)
     else:
         insertar(db_user, db_name, db_pass, INSERTS1)
+        insertar(db_user, db_name, db_pass, ["pedidos.sql"])
         insertar(db_user, db_name, db_pass, INSERTS2)
+        insertar(db_user, db_name, db_pass, INSERTS3)
+
+    input("GENERACIÓN FINALIZADA CON ÉXITO. Pulsa enter para cerrar.")
 
 main()
-input("GENERACIÓN FINALIZADA CON ÉXITO. Pulsa enter para cerrar.")

@@ -29,7 +29,7 @@ Dependiente de la versión de Python que utilices deberás usar el comando pytho
 Una ejecución normal de AutoPoblar debe tener el siguiente aspecto:
 
 ```python
-MacBook-Pro-de-Alfredo:AutoPoblar alfredocalatayud$ python3 main.py
+MacBook-Pro-de-Alfredo:AutoPoblar alfredocalatayud$ python3 AutoPoblar.py 
 Escribe tu usuario: gi_acs128
 Escribe tu database: gi_acs128
 Contraseña: 
@@ -89,29 +89,35 @@ Procesando |################################| 2/2
 | -----------------------------|
 | INSERTS EN TABLAS FINALIZADO |
 | -----------------------------|
-
-Generando lineas de pedidos: |################################| 2124/2124
-
-
+Generando lineas de pedidos: |################################| 2105/2105
 | -------------------------|
 | INICIO INSERTS EN TABLAS |
 | -------------------------|
 Insertando listas.sql...
 Procesando |################################| 1/1
 Insertando lineas_pedidos.sql...
-Procesando |################################| 25/25
-Insertando listas_producto.sql...
-
-Insertando mensajes.sql...
-
-Insertando mensajes_archivados.sql...
-
+Procesando |################################| 20/20
 Insertando chats.sql...
 Procesando |################################| 1/1
 Insertando chats_archivados.sql...
 Procesando |################################| 1/1
 Insertando valoraciones.sql...
 Procesando |################################| 1/1
+| -----------------------------|
+| INSERTS EN TABLAS FINALIZADO |
+| -----------------------------|
+Generando listas de productos: |################################| 2000/2000
+Generando mensajes archivados: |################################| 200/200
+Generando mensajes: |################################| 200/200
+| -------------------------|
+| INICIO INSERTS EN TABLAS |
+| -------------------------|
+Insertando listas_producto.sql...
+Procesando |################################| 21/21
+Insertando mensajes.sql...
+Procesando |################################| 2/2
+Insertando mensajes_archivados.sql...
+Procesando |################################| 2/2
 | -----------------------------|
 | INSERTS EN TABLAS FINALIZADO |
 | -----------------------------|
