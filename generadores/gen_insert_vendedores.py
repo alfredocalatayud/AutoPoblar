@@ -41,7 +41,7 @@ def main():
 		bar.next()
 
 		nif = nifs[j].replace("\n", "")
-		razon_social = fake.company()
+		razon_social = fake.unique.company()
 		documento_acreditativo_alta = fake.file_name(category='text', extension='pdf')
 		cuenta_bancaria = fake.iban()
 		verificado = str(random.randint(0,1))
