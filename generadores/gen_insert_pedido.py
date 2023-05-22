@@ -92,7 +92,7 @@ def main(db_user, db_name, db_pass):
             i+=1
             n_pedido+=1
             
-            if i % K_DIV_INSERT == 0 or i == K_DIV_INSERT or (n_nifs == len(nif_clientes) and n_pedido == n_pedidos):
+            if i % K_DIV_INSERT == 0 or (n_nifs == len(nif_clientes) and n_pedido == n_pedidos):
                 f.write(';\n')
                 if n_nifs < len(nif_clientes):
                     f.write(K_INSERT)
