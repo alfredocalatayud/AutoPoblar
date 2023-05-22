@@ -49,6 +49,8 @@ def main(db_user, db_name, db_pass):
     fechas_pedido = run_query('SELECT fecha_pedido from pedido;', db_user, db_name, db_pass)
     # nif_transportes = run_query('SELECT nif FROM transporte;', db_user, db_name, db_pass)
 
+    K_N_PEDIDOS = len(fechas_pedido)
+
     f = open(K_SALIDA, "x", encoding="utf-8")
     f = open(K_SALIDA, "a", encoding="utf-8")
 
@@ -114,4 +116,4 @@ def main(db_user, db_name, db_pass):
         fake.unique.clear()
 
     bar.finish()		
-    f.close();	
+    f.close();

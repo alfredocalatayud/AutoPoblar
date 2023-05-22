@@ -40,7 +40,7 @@ def main():
 		fecha_1 = fake.date_between(fecha_inicio, fecha_fin)
 		fecha_2 = fake.date_between(fecha_inicio, fecha_fin)
 
-		while fecha_1 >= fecha_2:
+		while fecha_1 > fecha_2:
 			fecha_2 = fake.date_between(fecha_inicio, fecha_fin)
 
 		id = str(j)

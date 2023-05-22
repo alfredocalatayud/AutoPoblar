@@ -11,6 +11,7 @@ K_INSERT = 'insert into valoracion (id, calificacion, titulo, cuerpo, respuesta,
 K_VALUES = "({}, {}, '{}', '{}', {}, '{}', '{}', {})"
 K_DIV_INSERT = 300
 K_N_INSERT = 300
+K_N_VALORACIONES = 10
 
 def main():
 	fake = Faker('es_ES')
@@ -31,32 +32,43 @@ def main():
 	f.write(K_INSERT)
 	i=0
 	j=1
+	n_valoraciones = 0
 
-	while i < K_N_INSERT:
-		bar.next() 
-		
-		id = str(j)
-		calificacion = str(random.randint(1,5))
-		titulo = fake.text(max_nb_chars=10)
-		cuerpo = fake.text(max_nb_chars=200)
-		respuesta = 'NULL'
-		fecha = str(fake.date_between(fecha_inicio, fecha_fin))
-		nif_cliente = nifs[random.randint(400, 599)].replace("\n", "")
-		id_producto = str(random.randint(1, 190))
+	for nif in nifs:
+		if i == K_N_INSERT:
+			break
+		n_valoraciones+=1
+		n_valoracion = random.randint(0,K_N_VALORACIONES)
+		valoracion = 0
 
-		# f.write('(' + str(j) + ', ' + calificacion + ', \'' + titulo + '\', \'' + cuerpo + '\', ' + respuesta + ', \'' + fecha + ', \'' + nif_cliente + '\', ' + id_producto + ')')
-		f.write(K_VALUES.format(id, calificacion, titulo, cuerpo, respuesta, fecha, nif_cliente, id_producto))
-		
-		i+=1 
-		j+=1
+		for k in range(n_valoracion):
+			bar.next()
+			id = str(j)
+			calificacion = str(random.randint(1,5))
+			titulo = fake.text(max_nb_chars=10)
+			cuerpo = fake.text(max_nb_chars=200)
+			respuesta = 'NULL'
+			fecha = str(fake.date_between(fecha_inicio, fecha_fin))
+			nif_cliente = nif.replace("\n", "")
+			id_producto = str(fake.unique.random_int(1, 190))
 
-		if i % K_DIV_INSERT == 0:
-			f.write(';\n')
-			if i < K_N_INSERT:
-				f.write(K_INSERT)
+			i += 1
+			j += 1
+			valoracion+=1
 
-		elif i < K_N_INSERT:
-			f.write(',\n')
+			f.write(K_VALUES.format(id, calificacion, titulo, cuerpo, respuesta, fecha, nif_cliente, id_producto))
+
+			if i % K_DIV_INSERT == 0 or i == K_DIV_INSERT or (n_valoraciones == K_N_INSERT and valoracion == n_valoraciones):
+				f.write(';\n')
+				if i != K_N_INSERT:
+					f.write(K_INSERT)
+			elif i != K_N_INSERT or valoracion == n_valoraciones:
+				f.write(',\n')
+
+			if i == K_N_INSERT:
+				break
+
+		fake.unique.clear()
 		
 	bar.finish()		
-	f.close();	
+	f.close();

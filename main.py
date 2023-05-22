@@ -10,7 +10,7 @@ DB_HOST = 'bbdd.dlsi.ua.es'
 K_DELETE = "./static/delete.txt"
 
 INSERTS1 = ["usuarios.sql", "categorias.sql", "clientes.sql", "direcciones.sql", "empleados.sql", "vendedores.sql",
-           "productos.sql", "transportes.sql", "tarjetas.sql", "pedidos.sql"]
+           "productos.sql", "transportes.sql", "tarjetas.sql"]
 
 INSERTS2 = ["listas.sql", "lineas_pedidos.sql", "listas_producto.sql", "mensajes.sql", "mensajes_archivados.sql", "chats.sql", "chats_archivados.sql", "valoraciones.sql"]
 
@@ -109,15 +109,15 @@ def main():
         vaciatablas(db_user, db_name, db_pass)
 
     if generadores in ["S", "s"]:
-        # gen_insert_usuarios.main()
-        # gen_insert_categorias.main()
-        # gen_insert_clientes.main()
-        # gen_insert_direcciones.main()
-        # gen_insert_empleados.main()
-        # gen_insert_vendedores.main()
-        # gen_insert_productos.main()
-        # gen_insert_tarjetas.main()
-        # gen_insert_lista.main()
+        gen_insert_usuarios.main()
+        gen_insert_categorias.main()
+        gen_insert_clientes.main()
+        gen_insert_direcciones.main()
+        gen_insert_empleados.main()
+        gen_insert_vendedores.main()
+        gen_insert_productos.main()
+        gen_insert_tarjetas.main()
+        gen_insert_lista.main()
         gen_insert_chats_archivados.main()
         gen_insert_chats.main()
         gen_insert_transportes.main()
@@ -125,17 +125,18 @@ def main():
 
         insertar(db_user, db_name, db_pass, INSERTS1)
 
-        gen_insert_pedido.main(DB_USER, DB_NAME, DB_PASS)
-        gen_insert_lista_producto.main(DB_USER, DB_NAME, DB_PASS)
-        gen_insert_lineas_pedidos.main(DB_USER, DB_NAME, DB_PASS)
-        gen_insert_mensajes_archivados.main(DB_USER, DB_NAME, DB_PASS)
-        gen_insert_mensajes.main(DB_USER, DB_NAME, DB_PASS)
+        gen_insert_pedido.main(db_user, db_name, db_pass)
+        insertar(db_user, db_name, db_pass, ["pedidos.sql"])
+
+        gen_insert_lista_producto.main(db_user, db_name, db_pass)
+        gen_insert_lineas_pedidos.main(db_user, db_name, db_pass)
+        gen_insert_mensajes_archivados.main(db_user, db_name, db_pass)
+        gen_insert_mensajes.main(db_user, db_name, db_pass)
 
         insertar(db_user, db_name, db_pass, INSERTS2)
     else:
         insertar(db_user, db_name, db_pass, INSERTS1)
         insertar(db_user, db_name, db_pass, INSERTS2)
-        
 
 main()
-input("Pulsa enter para cerrar.")
+input("GENERACIÓN FINALIZADA CON ÉXITO. Pulsa enter para cerrar.")
