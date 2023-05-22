@@ -5,6 +5,8 @@ import mysql.connector
 import getpass
 import os
 from progress.bar import Bar
+from timeit import default_timer as timer
+from datetime import timedelta
 
 DB_HOST = 'bbdd.dlsi.ua.es'
 K_DELETE = "./static/delete.txt"
@@ -98,6 +100,8 @@ def main():
     generadores = input('¿Generar datasets? (s/N): ')
     nifs = input('¿Generar NIFs? (s/N): ')
 
+    start = timer()
+
     if not(os.path.exists("./SQL") and os.path.isdir("./SQL")):
         os.mkdir("./SQL")
 
@@ -141,6 +145,9 @@ def main():
         insertar(db_user, db_name, db_pass, ["pedidos.sql"])
         insertar(db_user, db_name, db_pass, INSERTS2)
         insertar(db_user, db_name, db_pass, INSERTS3)
+
+    end = timer()
+    print("Tiempo de ejecución: {}".format(seconds=end-start))
 
     input("GENERACIÓN FINALIZADA CON ÉXITO. Pulsa enter para cerrar.")
 
