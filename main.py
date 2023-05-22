@@ -78,7 +78,7 @@ def insertar(db_user, db_name, db_pass, inserts):
         # os.system(comando)
         ttabla = "./SQL/" + tabla
 
-        fd = open(ttabla, encoding="utf8")
+        fd = open(ttabla, encoding="latin-1")
         archivosql = fd.read()
         # sqlcommands = re.split(';', archivosql)
         sqlcommands = [elemento + ';' for elemento in archivosql.split(';')]
@@ -99,7 +99,7 @@ def main():
     db_pass = getpass.getpass('Contraseña: ')
     eliminar = input('¿Desea vaciar tablas? (S/n): ')
     generadores = input('¿Generar datasets? (s/N): ')
-    nifs = input('¿Generar datasets? (s/N): ')
+    nifs = input('¿Generar NIFs? (s/N): ')
 
     if nifs in ["S", "s"]:
         generador_dni.main()
