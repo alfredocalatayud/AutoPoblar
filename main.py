@@ -3,12 +3,10 @@ from generadores import gen_insert_lista_producto, gen_insert_lista, gen_insert_
 from generadores import gen_insert_transportes, gen_insert_usuarios, gen_insert_valoraciones, gen_insert_vendedores, generador_dni
 import mysql.connector
 import getpass
+import os
 from progress.bar import Bar
 
 DB_HOST = 'bbdd.dlsi.ua.es'
-DB_USER = 'gi_acs128'
-DB_PASS = 'Caramelos1998'
-DB_NAME = 'gi_tierra_alicante'
 K_DELETE = "./static/delete.txt"
 
 INSERTS1 = ["usuarios.sql", "categorias.sql", "clientes.sql", "direcciones.sql", "empleados.sql", "vendedores.sql",
@@ -100,6 +98,9 @@ def main():
     eliminar = input('¿Desea vaciar tablas? (S/n): ')
     generadores = input('¿Generar datasets? (s/N): ')
     nifs = input('¿Generar NIFs? (s/N): ')
+
+    if not(os.path.exists("./SQL") and os.path.isdir("./SQL")):
+        os.mkdir("./SQL")
 
     if nifs in ["S", "s"]:
         generador_dni.main()
