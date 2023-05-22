@@ -7,6 +7,8 @@ import os
 from progress.bar import Bar
 from timeit import default_timer as timer
 from datetime import timedelta
+from multiprocessing import Process
+import winsound
 
 DB_HOST = 'bbdd.dlsi.ua.es'
 K_DELETE = "./static/delete.txt"
@@ -27,7 +29,7 @@ def run_query(querys, db_user, db_name, db_pass):
     cursor.execute("SET character_set_connection=utf8;")
     cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
 
-    bar = Bar('Procesando', max=len(querys))
+    bar = Bar('     Procesando', max=len(querys))
 
     for query in querys:
         #print(query)
@@ -147,7 +149,7 @@ def main():
         insertar(db_user, db_name, db_pass, INSERTS3)
 
     end = timer()
-    print("Tiempo de ejecución: {}".format(seconds=end-start))
+    print("Tiempo de ejecución: {}".format(timedelta(seconds=end-start)))
 
     input("GENERACIÓN FINALIZADA CON ÉXITO. Pulsa enter para cerrar.")
 
