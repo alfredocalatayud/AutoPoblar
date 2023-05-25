@@ -1,3 +1,4 @@
+DELETE FROM {}.direccion;
 DELETE FROM {}.usuario;
 DELETE FROM {}.chat;
 DELETE FROM {}.pedido;
@@ -9,7 +10,6 @@ DELETE FROM {}.valoracion;
 DELETE FROM {}.mensaje_archivado;
 DELETE FROM {}.categoria;
 DELETE FROM {}.producto_lista;
-DELETE FROM {}.direccion;
 DELETE FROM {}.linea_pedido;
 DELETE FROM {}.empleado;
 DELETE FROM {}.transporte;

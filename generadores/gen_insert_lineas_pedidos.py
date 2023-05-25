@@ -9,8 +9,8 @@ DB_HOST = 'bbdd.dlsi.ua.es'
 
 K_SALIDA = './SQL/lineas_pedidos.sql'
 K_LETRAS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-K_INSERT = 'insert into linea_pedido (id, cantidad, precio, base, iva, subtotal, estado, fecha_envio, fecha_recepcion, id_producto, id_pedido, nif_vendedor) values '
-K_VALUES = "({}, {}, {}, {}, {}, {}, '{}', {}, {}, '{}', {}, '{}')"
+K_INSERT = 'insert into linea_pedido (id, cantidad, precio, base, iva, subtotal, estado, fecha_envio, fecha_recepcion, id_producto, id_pedido) values '
+K_VALUES = "({}, {}, {}, {}, {}, {}, '{}', {}, {}, '{}', {})"
 K_DIV_INSERT = 2000
 K_N_PEDIDOS = 2000
 K_N_PRODUCTOS = 30
@@ -97,11 +97,10 @@ def main(db_user, db_name, db_pass):
             f_envio = "'" + str(fecha_envio) + "'" if fecha_envio != 'NULL' else 'NULL'
             f_recepcion = "'" + str(fecha_recepcion) + "'" if fecha_recepcion != 'NULL' else 'NULL'
             id_producto = producto[0]
-            nif_vendedor = producto[3]
 
             # f.write('(' + str(j) + ', ' + str(cantidad) + ', ' + str(precio) + ', ' + str(base) + ', ' + str(iva) + ', ' + str(subtotal) + ', \'' + estado + '\', ' \
             #             + f_envio + ', ' + f_recepcion + ', ' + str(id_producto) + ', ' + str(id_pedido) + ', \'' + nif_vendedor + '\')')
-            f.write(K_VALUES.format(id, str(cantidad), str(precio), str(base), str(iva), str(subtotal), estado, f_envio, f_recepcion, id_producto, str(id_pedido), nif_vendedor))
+            f.write(K_VALUES.format(id, str(cantidad), str(precio), str(base), str(iva), str(subtotal), estado, f_envio, f_recepcion, id_producto, str(id_pedido)))
             
             j+=1  
             linea+=1   
@@ -116,4 +115,4 @@ def main(db_user, db_name, db_pass):
         fake.unique.clear()
 
     bar.finish()		
-    f.close();
+    f.close()
