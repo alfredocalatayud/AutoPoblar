@@ -1,9 +1,9 @@
+DELETE FROM {}.vendedor;    
 DELETE FROM {}.direccion;
 DELETE FROM {}.usuario;
 DELETE FROM {}.chat;
 DELETE FROM {}.pedido;
 DELETE FROM {}.producto;
-DELETE FROM {}.vendedor;
 DELETE FROM {}.mensaje;
 DELETE FROM {}.chat_archivado;
 DELETE FROM {}.valoracion;

@@ -16,7 +16,6 @@ K_N_CHATS = 200
 def run_query(query, db_user, db_name, db_pass):
     
     conn = mysql.connector.connect(host = DB_HOST, user = db_user, passwd = db_pass, database = db_name)
-    conn.set_character_set_name('utf8')
     cursor = conn.cursor()
     cursor.execute("SET NAMES utf8;")
     cursor.execute("SET CHARACTER SET utf8;")
