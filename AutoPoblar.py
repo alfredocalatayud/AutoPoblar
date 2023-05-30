@@ -43,55 +43,61 @@ def run_query(querys, db_user, db_name, db_pass):
     cursor.close()
     conn.close()
 
-    return 0
-
-
 def vaciatablas(db_user, db_name, db_pass):
     setter1 = "SET FOREIGN_KEY_CHECKS=0;"
     setter2 = "SET FOREIGN_KEY_CHECKS=1;"
 
-    fichero_deletes = open(K_DELETE)
-    deletes = fichero_deletes.readlines()
-    fdeletes = []
+    # fichero_deletes = open(K_DELETE)
+    # deletes = fichero_deletes.readlines()
+    # fdeletes = []
 
-    print("| -------------------------|")
+    # for delete in deletes:
+    #     fdeletes.append(delete.format(db_name).replace("\n", ""))
+    #     # run_query(setter1, db_user, db_name, db_pass)        
+    #     # run_query(setter2, db_user, db_name, db_pass)
+
+    with open(K_DELETE) as file:
+        deletes = [line.strip().format(db_name) for line in file]
+
+    print("+--------------------------+")
     print("| INICIO BORRADO DE TABLAS |")
-    print("| -------------------------|")
+    print("+--------------------------+")
 
-    for delete in deletes:
-        fdeletes.append(delete.format(db_name).replace("\n", ""))
-        # run_query(setter1, db_user, db_name, db_pass)        
-        # run_query(setter2, db_user, db_name, db_pass)
+    run_query(deletes, db_user, db_name, db_pass)
 
-    run_query(fdeletes, db_user, db_name, db_pass)
-
-    print("| -----------------------------|")
+    print("+------------------------------+")
     print("| BORRADO DE TABLAS FINALIZADO |")
-    print("| -----------------------------|")
+    print("+------------------------------+")
 
 
 def insertar(db_user, db_name, db_pass, inserts):
-    print("| -------------------------|")
+    print("+--------------------------+")
     print("| INICIO INSERTS EN TABLAS |")
-    print("| -------------------------|")
+    print("+--------------------------+")
 
     for tabla in inserts:
-        print('Insertando ' + tabla + '...')
-        ttabla = "./SQL/" + tabla
+        print('Insertando {}...'.format(tabla))
+        sql_file = "./SQL/{}".format(tabla)
 
-        fd = open(ttabla, encoding="latin-1")
-        archivosql = fd.read()
-        sqlcommands = [elemento + ';' for elemento in archivosql.split(';')]
-        sqlcommands.pop()
+        # fd = open(ttabla, encoding="latin-1")
+        # archivosql = fd.read()
+        # sqlcommands = [elemento + ';' for elemento in archivosql.split(';')]
+        # sqlcommands.pop()
 
-        run_query(sqlcommands, db_user, db_name, db_pass)
+        # run_query(sqlcommands, db_user, db_name, db_pass)
 
-        fd.close()
-        # for command in sqlcommands:
+        with open(sql_file, encoding="latin-1") as file:
+            sql_commands = file.read().split(';')[:-1]
 
-    print("| -----------------------------|")
+        run_query(sql_commands, db_user, db_name, db_pass)
+
+        # fd.close()
+        
+        
+
+    print("+------------------------------+")
     print("| INSERTS EN TABLAS FINALIZADO |")
-    print("| -----------------------------|")
+    print("+------------------------------+")
 
 def main():
     db_user = input('Escribe tu usuario: ')
@@ -152,4 +158,5 @@ def main():
 
     input("GENERACIÓN FINALIZADA CON ÉXITO. Pulsa enter para cerrar.")
 
-main()
+if __name__ == "__main__":
+	main()

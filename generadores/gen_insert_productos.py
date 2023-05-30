@@ -16,7 +16,7 @@ def main():
 	fake = Faker('es_ES')
 
 	ivas = [0.05, 0.10, 0.21]
-	restricciones = [12, 16, 18]
+	restricciones = [0, 5, 12, 16, 18]
 
 	if path.exists(K_SALIDA):
 		remove(K_SALIDA)
