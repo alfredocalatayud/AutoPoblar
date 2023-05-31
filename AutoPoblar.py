@@ -7,8 +7,6 @@ import os
 from progress.bar import Bar
 from timeit import default_timer as timer
 from datetime import timedelta
-from multiprocessing import Process
-import winsound
 
 DB_HOST = 'bbdd.dlsi.ua.es'
 K_DELETE = "./static/delete.txt"
@@ -119,21 +117,21 @@ def main():
         vaciatablas(db_user, db_name, db_pass)
 
     if generadores in ["S", "s"]:
-        gen_insert_usuarios.main()
-        gen_insert_categorias.main()
-        gen_insert_clientes.main()
-        gen_insert_direcciones.main()
-        gen_insert_empleados.main()
-        gen_insert_vendedores.main()
-        gen_insert_productos.main()
-        gen_insert_tarjetas.main()
-        gen_insert_lista.main()
-        gen_insert_chats_archivados.main()
-        gen_insert_chats.main()
-        gen_insert_transportes.main()
-        gen_insert_valoraciones.main()
-
-        insertar(db_user, db_name, db_pass, INSERTS1)
+        # gen_insert_usuarios.main()
+        # gen_insert_categorias.main()
+        # gen_insert_clientes.main()
+        # gen_insert_direcciones.main()
+        # gen_insert_empleados.main()
+        # gen_insert_vendedores.main()
+        # gen_insert_productos.main()
+        # gen_insert_tarjetas.main()
+        # gen_insert_lista.main()
+        # gen_insert_chats_archivados.main()
+        # gen_insert_chats.main()
+        # gen_insert_transportes.main()
+        # gen_insert_valoraciones.main()
+        #
+        # insertar(db_user, db_name, db_pass, INSERTS1)
 
         gen_insert_pedido.main(db_user, db_name, db_pass)
         insertar(db_user, db_name, db_pass, ["pedidos.sql"])
@@ -157,6 +155,7 @@ def main():
     print("Tiempo de ejecución: {}".format(timedelta(seconds=end-start)))
 
     input("GENERACIÓN FINALIZADA CON ÉXITO. Pulsa enter para cerrar.")
+
 
 if __name__ == "__main__":
 	main()

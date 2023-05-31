@@ -46,7 +46,6 @@ def main(db_user, db_name, db_pass):
 
     productos = run_query('SELECT id, precio, iva, nif_vendedor FROM producto;', db_user, db_name, db_pass)
     fechas_pedido = run_query('SELECT fecha_pedido from pedido;', db_user, db_name, db_pass)
-    # nif_transportes = run_query('SELECT nif FROM transporte;', db_user, db_name, db_pass)
 
     K_N_PEDIDOS = len(fechas_pedido)
 
@@ -56,8 +55,8 @@ def main(db_user, db_name, db_pass):
     bar = Bar('Generando lineas de pedidos:', max = K_N_PEDIDOS)
     f.write(K_INSERT)
 
-    j=0
-    i=0
+    j = 0
+    i = 0
 
     fecha_inicio = date(2021, 1, 1)
     fecha_fin = date(2023, 5, 1)
@@ -89,9 +88,9 @@ def main(db_user, db_name, db_pass):
             producto = productos[fake.unique.random_int(min = 0, max = len(productos)-1)]
             cantidad = random.randint(1, 200)
             precio = producto[1]
-            base = cantidad * precio
             iva = producto[2]
-            subtotal = round(precio * (1+iva), 2)
+            base = round(precio / (1+iva), 2) * cantidad
+            subtotal = cantidad * precio
             estado = K_ESTADOS[random.randint(0,len(K_ESTADOS)-1)]
             f_envio = "'" + str(fecha_envio) + "'" if fecha_envio != 'NULL' else 'NULL'
             f_recepcion = "'" + str(fecha_recepcion) + "'" if fecha_recepcion != 'NULL' else 'NULL'

@@ -1,3 +1,5 @@
+import traceback
+
 from faker import Faker
 from progress.bar import Bar
 from datetime import date
@@ -51,8 +53,8 @@ def main(db_user, db_name, db_pass):
     bar = Bar('Generando pedidos:', max=len(nif_clientes))
     f.write(K_INSERT)
 
-    j=1
-    i=0
+    j = 1
+    i = 0
 
     fecha_inicio = date(2021, 1, 1)
     fecha_fin = date(2023, 5, 1)
@@ -61,12 +63,26 @@ def main(db_user, db_name, db_pass):
 
     for nif_cliente in nif_clientes:
         bar.next()
-        n_nifs+=1
+        n_nifs += 1
 
-        num_tarjeta_bancarias = run_query('SELECT nif_cliente, numero FROM tarjeta_bancaria where nif_cliente = \'' + nif_cliente[0] + '\';', db_user, db_name, db_pass)
+        try:
+            num_tarjeta_bancarias = run_query('SELECT nif_cliente, numero FROM tarjeta_bancaria where nif_cliente = \'' + nif_cliente[0] + '\';', db_user, db_name, db_pass)
+        except Exception as e:
+            print("\nNif cliente: {}, {}".format('SELECT nif_cliente, numero FROM tarjeta_bancaria where nif_cliente = \'' + nif_cliente[0] + '\';', j))
+            print("Ocurrió el error: {}".format(e))
+            traceback.print_exc()
+            raise
+
         num_tarjeta_bancaria = valor_cursor(num_tarjeta_bancarias, nif_cliente[0])
 
-        id_dir_envios = run_query('SELECT nif_usuario, id FROM direccion where nif_usuario = \'' + nif_cliente[0] + '\';', db_user, db_name, db_pass)
+        try:
+            id_dir_envios = run_query('SELECT nif_usuario, id FROM direccion where nif_usuario = \'' + nif_cliente[0] + '\';', db_user, db_name, db_pass)
+        except Exception as e:
+            print("\nNif cliente: {} {}".format('SELECT nif_usuario, id FROM direccion where nif_usuario = \'' + nif_cliente[0] + '\';', j))
+            print("Ocurrió el error: {}".format(e))
+            traceback.print_exc()
+            raise
+
         id_dir_envio = valor_cursor(id_dir_envios, nif_cliente[0])
         id_dir_fact = id_dir_envio
         
@@ -78,18 +94,15 @@ def main(db_user, db_name, db_pass):
             total = 0
             fecha_pedido = fake.date_between(fecha_inicio, fecha_fin)        
             coste_envio = round(random.uniform(1.00, 10.00), 2)
-            tiempo_envio = random.randint(0, 60)
+            tiempo_envio = random.randint(1, 30)
             i_nif_cliente = nif_cliente[0]
             nif_transporte = nif_transportes[random.randint(0, len(nif_transportes)-1)]
             
-            
-            # f.write('(' + str(j) + ', ' + str(total) + ', \'' + str(fecha_pedido) + '\', ' + str(coste_envio) + ', ' + str(tiempo_envio) + ', \'' \
-            #             + nif_cliente[0] + '\', \'' + nif_transporte[0] + '\', ' + str(id_dir_envio) + ', ' + str(id_dir_fact) + ', \'' + num_tarjeta_bancaria  + '\')')
             f.write(K_VALUES.format(id, str(total), str(fecha_pedido), str(coste_envio), str(tiempo_envio), i_nif_cliente, nif_transporte[0], str(id_dir_envio), str(id_dir_fact), num_tarjeta_bancaria))
         
-            j+=1        
-            i+=1
-            n_pedido+=1
+            j += 1
+            i += 1
+            n_pedido += 1
             
             if i % K_DIV_INSERT == 0 or (n_nifs == len(nif_clientes) and n_pedido == n_pedidos):
                 f.write(';\n')

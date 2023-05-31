@@ -1,7 +1,7 @@
 from faker import Faker
 from progress.bar import Bar
 from os import remove, path
-import os 
+import os
 
 # librerías Encriptado
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
@@ -16,6 +16,7 @@ K_FORMATO_NIF = '########?'
 K_LETRAS_NIF = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 KEY_ENCRYPT = b'\xe3\xdc\x8f\xc1\x16oC0N\xd4\x9023\xa2\x1ej\xbeYu\xcf1\x08k]?\xbc\xeb\xaa=\xc4y\xb5'
+
 
 def encrypt_line(line, password):
     backend = default_backend()
@@ -34,19 +35,24 @@ def encrypt_line(line, password):
     encrypted_line = encryptor.update(padded_data) + encryptor.finalize()
     return encrypted_line.hex()
 
+
 def main():
-	fake = Faker('es_ES')
+    fake = Faker('es_ES')
 
-	if path.exists(K_FICHERO_NIFS):
-		remove(K_FICHERO_NIFS)
+    if path.exists(K_FICHERO_NIFS):
+        remove(K_FICHERO_NIFS)
 
-	with open(K_FICHERO_NIFS, 'w') as output_file:
-		bar = Bar('Creando NIFs:', max=K_NIFS)
+    with open(K_FICHERO_NIFS, 'w') as output_file:
+        bar = Bar('Creando NIFs:', max=K_NIFS)
 
-		for _ in range(K_NIFS):
-			bar.next()
-			nif = encrypt_line(fake.unique.bothify(text = K_FORMATO_NIF, letters = K_LETRAS_NIF), KEY_ENCRYPT)
-			
-			output_file.write(nif + '\n')
-				
-		bar.finish()		
+        for _ in range(K_NIFS):
+            bar.next()
+            nif = encrypt_line(fake.unique.bothify(text=K_FORMATO_NIF, letters=K_LETRAS_NIF), KEY_ENCRYPT)
+
+            output_file.write(nif + '\n')
+
+        bar.finish()
+
+
+if __name__ == "__main__":
+    main()
