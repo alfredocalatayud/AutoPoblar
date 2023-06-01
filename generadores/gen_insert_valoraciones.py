@@ -34,7 +34,7 @@ def main():
 	j=1
 	n_valoraciones = 0
 
-	for nif in nifs:
+	for nif in nifs[400:599]:
 		if i == K_N_INSERT:
 			break
 		n_valoraciones+=1

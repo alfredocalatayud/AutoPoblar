@@ -3,37 +3,32 @@ from progress.bar import Bar
 from os import remove, path
 import os
 
-# librerías Encriptado
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+# Import
+import os
 from cryptography.hazmat.primitives import padding
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from Crypto.Protocol.KDF import PBKDF2
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
 
 K_NIFS = 1000000
 K_FICHERO_NIFS = './static/nifs.txt'
 K_FORMATO_NIF = '########?'
 K_LETRAS_NIF = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
-KEY_ENCRYPT = b'\xe3\xdc\x8f\xc1\x16oC0N\xd4\x9023\xa2\x1ej\xbeYu\xcf1\x08k]?\xbc\xeb\xaa=\xc4y\xb5'
+SALT = b'\x01\xaet\xd3&\xdb\xfb\x0b\x94f\xc2\xb2\xffm\xf0\x94\xf8K\xb4d\xef%\xf3\xcb\xb7\xaf\xcdH\x92\x81B\xa0' # Para encriptar la key generation
+PASSWORD = "abcdefghijklmnopqrstuvwx"
 
 
-def encrypt_line(line, password):
-    backend = default_backend()
+def mi_encripta(line):
+    key = PBKDF2(PASSWORD, SALT, dkLen=32)
 
-    key = password  # Utiliza los primeros 32 bytes de la contraseña como clave AES de 256 bits
-    iv = os.urandom(16)  # Utiliza los siguientes 16 bytes de la contraseña como IV de 128 bits
+    cipher = AES.new(key, AES.MODE_CBC)
+    ciphered_data = cipher.encrypt(pad(line, AES.block_size))
+    iv = cipher.iv
 
-    cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=backend)
-    encryptor = cipher.encryptor()
-
-    # Asegúrate de que la línea tenga un tamaño múltiplo del bloque de cifrado
-    padder = padding.PKCS7(algorithms.AES.block_size).padder()
-    padded_data = padder.update(line.encode()) + padder.finalize()
-
-    # Encripta la línea y retorna la línea encriptada en formato hexadecimal
-    encrypted_line = encryptor.update(padded_data) + encryptor.finalize()
-    return encrypted_line.hex()
+    return (iv + ciphered_data).decode('latin-1')
 
 
 def main():
@@ -42,12 +37,12 @@ def main():
     if path.exists(K_FICHERO_NIFS):
         remove(K_FICHERO_NIFS)
 
-    with open(K_FICHERO_NIFS, 'w') as output_file:
+    with open(K_FICHERO_NIFS, 'w', encoding='latin-1') as output_file:
         bar = Bar('Creando NIFs:', max=K_NIFS)
 
         for _ in range(K_NIFS):
             bar.next()
-            nif = encrypt_line(fake.unique.bothify(text=K_FORMATO_NIF, letters=K_LETRAS_NIF), KEY_ENCRYPT)
+            nif = mi_encripta(fake.unique.bothify(text=K_FORMATO_NIF, letters=K_LETRAS_NIF).encode('utf-8'))
 
             output_file.write(nif + '\n')
 
