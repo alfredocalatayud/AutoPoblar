@@ -15,29 +15,9 @@ K_SALIDA = './SQL/vendedores.sql'
 K_NIFS = "./static/nifs.txt"
 K_LETRAS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 K_INSERT = 'insert into vendedor (nif, razon_social, documento_acreditativo_alta, cuenta_bancaria, verificado, logo) values '
-K_VALUES = "('{}', '{}', '{}', '{}', {}, '{}')"
+K_VALUES = "('{}', '{}', '{}', AES_ENCRYPT('{}', SHA2('abcdefghijklmnopqrstuvwx', 512)), {}, '{}')"
 K_DIV_INSERT = 200
 K_N_PERSONAS = 200
-
-KEY_ENCRYPT = b'\xe3\xdc\x8f\xc1\x16oC0N\xd4\x9023\xa2\x1ej\xbeYu\xcf1\x08k]?\xbc\xeb\xaa=\xc4y\xb5'
-
-def encrypt_line(line, password):
-    backend = default_backend()
-
-    key = password  # Utiliza los primeros 32 bytes de la contraseña como clave AES de 256 bits
-    iv = os.urandom(16)  # Utiliza los siguientes 16 bytes de la contraseña como IV de 128 bits
-
-    cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=backend)
-    encryptor = cipher.encryptor()
-
-    # Asegúrate de que la línea tenga un tamaño múltiplo del bloque de cifrado
-    padder = padding.PKCS7(algorithms.AES.block_size).padder()
-    padded_data = padder.update(line.encode()) + padder.finalize()
-
-    # Encripta la línea y retorna la línea encriptada en formato hexadecimal
-    encrypted_line = encryptor.update(padded_data) + encryptor.finalize()
-    
-    return encrypted_line.hex()
 
 def main():
 	fake = Faker('es_ES')
@@ -70,7 +50,7 @@ def main():
 		nif = nifs[j].replace("\n", "")
 		razon_social = fake.unique.company()
 		documento_acreditativo_alta = fake.file_name(category='text', extension='pdf')
-		cuenta_bancaria = encrypt_line(fake.iban(), KEY_ENCRYPT)
+		cuenta_bancaria = fake.iban()
 		verificado = str(random.randint(0,1))
 		logo = fake.image_url(placeholder_url="https://loremflickr.com/{}/{}/business".format(my_width,my_height))
 		

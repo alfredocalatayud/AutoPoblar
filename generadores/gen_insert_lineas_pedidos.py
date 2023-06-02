@@ -96,8 +96,6 @@ def main(db_user, db_name, db_pass):
             f_recepcion = "'" + str(fecha_recepcion) + "'" if fecha_recepcion != 'NULL' else 'NULL'
             id_producto = producto[0]
 
-            # f.write('(' + str(j) + ', ' + str(cantidad) + ', ' + str(precio) + ', ' + str(base) + ', ' + str(iva) + ', ' + str(subtotal) + ', \'' + estado + '\', ' \
-            #             + f_envio + ', ' + f_recepcion + ', ' + str(id_producto) + ', ' + str(id_pedido) + ', \'' + nif_vendedor + '\')')
             f.write(K_VALUES.format(id, str(cantidad), str(precio), str(base), str(iva), str(subtotal), estado, f_envio, f_recepcion, id_producto, str(id_pedido)))
             
             j+=1  

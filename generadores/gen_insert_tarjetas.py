@@ -15,7 +15,7 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 K_SALIDA = './SQL/tarjetas.sql'
 K_NIFS = "./static/nifs.txt"
 K_INSERT = 'insert into tarjeta_bancaria (numero, titular, cvv, fecha_caducidad, nif_cliente) values '
-K_VALUES = "('{}', '{}', '{}', '{}', '{}')"
+K_VALUES = "('{}', AES_ENCRYPT('{}', SHA2('abcdefghijklmnopqrstuvwx', 512)), '{}', '{}', '{}')"
 K_DIV_INSERT = 100
 K_N_INSERT = 200
 
