@@ -40,7 +40,6 @@ def main():
 		nif =  nifs[k].replace("\n", "")
 		nombre = transporte.replace("\n", "")
 		
-		# f.write('(\'' + nifs[k].replace("\n", "") + '\', \'' + transporte.replace("\n", "") + '\')')
 		f.write(K_VALUES.format(nif, nombre))
 		
 		i+=1 

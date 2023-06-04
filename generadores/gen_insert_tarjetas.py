@@ -64,8 +64,8 @@ def main():
 	while i < K_N_INSERT:
 		bar.next() 
 		
-		numero = encrypt_line(str(fake.unique.credit_card_number(card_type = 'visa')), KEY_ENCRYPT)
-		titular = encrypt_line(fake.name(), KEY_ENCRYPT)
+		numero = str(fake.unique.credit_card_number(card_type = 'visa'))
+		titular = fake.name()
 		cvv = str(fake.credit_card_security_code(card_type = 'visa'))
 		fecha_caducidad = str(fake.date_between(fecha_inicio, fecha_fin))
 		nif_cliente = nifs[i+400].replace("\n", "")

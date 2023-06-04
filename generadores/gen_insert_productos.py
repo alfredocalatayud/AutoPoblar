@@ -2,6 +2,7 @@ from faker import Faker
 from progress.bar import Bar
 from os import remove, path
 import random
+import requests
 
 K_SALIDA = './SQL/productos.sql'
 K_CATEGORIAS = "./static/categorias.txt"
@@ -11,6 +12,18 @@ K_INSERT = 'insert into producto (id, nombre, descripcion, id_categoria, nif_ven
 K_VALUES = "({}, '{}', '{}', {}, '{}', {}, {}, {}, {}, {}, '{}', {}, '{}', {}, {}, {})"
 K_DIV_INSERT = 190
 K_N_INSERT = 190
+
+def get_imagen(category):
+    # make a request to the Unsplash API to get a random image
+	url = f"https://api.unsplash.com/photos/random?query={category}&orientation=landscape&client_id=1n7sSMtCh8Hs_MrBOjhQ1SygTDA-BJ550UdX3rwLYZQ"
+	try:
+		data = requests.get(url).json()
+		salida = data["urls"]["regular"]
+	except:
+		salida ="https://images.unsplash.com/photo-1606851181064-b7507b24377c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NDgxMTB8MHwxfHJhbmRvbXx8fHx8fHx8fDE2ODU4NzYyNTJ8&ixlib=rb-4.0.3&q=80&w=1080"
+
+
+	return(salida)
 
 def main():
 	fake = Faker('es_ES')
@@ -43,6 +56,7 @@ def main():
 		bar.next() 
 		
 		id = str(j)
+		nombre = producto.replace("\n", "")
 		descripcion = fake.text(max_nb_chars=50)
 		categoria = str(random.randint(1,100))
 		vendedor = nifs[random.randint(200,399)]
@@ -53,14 +67,14 @@ def main():
 		plazo_devolucion = str(random.randint(30,90))
 		dimensiones = str(random.randint(1,100)) + 'x' + str(random.randint(1,100)) + 'x' + str(random.randint(1,100))
 		peso = str(round(random.uniform(1.00, 200.00), 2))
-		url_imagen = fake.image_url(placeholder_url="https://loremflickr.com/{}/{}/food".format(my_width,my_height))
+		url_imagen = fake.image_url(placeholder_url=get_imagen(nombre))
 		restric_edad = str(restricciones[random.randint(0,2)])
 		activo = str(random.randint(0,1))
 		relevancia = str(random.randint(0,100))
 		
 		# f.write('(' + str(j) + ', \'' + producto.replace("\n", "") + '\', \'' + descripcion + '\', ' + str(categoria) + ', \'' + vendedor.replace("\n", "") + '\', ' + str(precio) + ', ' + str(costes_envio) + ', ' + \
 		#  				str(iva) + ', ' + str(stock) + ', ' +str(stock) + ', \'' + dimensiones + '\', ' + str(peso) + ', \'' + url_imagen + '\', ' + str(restric_edad) + ', ' + str(activo) + ', ' + str(relevancia) + ')')
-		f.write(K_VALUES.format(id, producto.replace("\n", ""), descripcion, categoria, vendedor.replace("\n", ""), str(precio), str(costes_envio), str(iva), stock, plazo_devolucion, dimensiones, peso, url_imagen, restric_edad, activo, relevancia))
+		f.write(K_VALUES.format(id, nombre, descripcion, categoria, vendedor.replace("\n", ""), str(precio), str(costes_envio), str(iva), stock, plazo_devolucion, dimensiones, peso, url_imagen, restric_edad, activo, relevancia))
 		
 		i+=1 
 		j+=1
@@ -75,3 +89,7 @@ def main():
 		
 	bar.finish()		
 	f.close();	
+
+
+if __name__ == "__main__":
+    main()

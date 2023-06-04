@@ -12,6 +12,7 @@ Usar el gestor de paquetes [pip](https://pip.pypa.io/en/stable/) para instalar l
 pip install faker
 pip install progress
 pip install mysql-connector-python
+pip install cryptography Crypto
 ```
 
 ## Ejecución

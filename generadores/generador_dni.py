@@ -6,7 +6,7 @@ from progress.bar import Bar
 from os import remove, path
 import os
 
-from utiles import encriptar
+#from utiles import encriptar
 
 K_NIFS = 1000000
 K_FICHERO_NIFS = './static/nifs.txt'
