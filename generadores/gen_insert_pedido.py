@@ -11,7 +11,7 @@ DB_HOST = 'bbdd.dlsi.ua.es'
 
 K_SALIDA = './SQL/pedidos.sql'
 K_INSERT = 'insert pedido (id, total, fecha_pedido, coste_envio, tiempo_envio, nif_cliente, nif_transporte, id_dir_envio, id_dir_fact, num_tarjeta_bancaria) values '
-K_VALUES = "({}, {}, '{}', {}, {}, AES_ENCRYPT('{}', SHA2('abcdefghijklmnopqrstuvwx', 512)), AES_ENCRYPT('{}', SHA2('abcdefghijklmnopqrstuvwx', 512)), {}, {}, AES_ENCRYPT('{}', SHA2('abcdefghijklmnopqrstuvwx', 512)))"
+K_VALUES = "({}, {}, '{}', {}, {}, AES_ENCRYPT('{}', SHA2('abcdefghijklmnopqrstuvwx', 512)), '{}', {}, {}, AES_ENCRYPT('{}', SHA2('abcdefghijklmnopqrstuvwx', 512)))"
 K_DIV_INSERT = 2000
 K_N_PEDIDOS = 20
 K_N_CHATS = 200
@@ -45,7 +45,7 @@ def main(db_user="gi_acs128", db_name="gi_acs128", db_pass="Caramelos1998"):
         remove(K_SALIDA)
 
     nif_clientes = run_query("SELECT AES_DECRYPT(nif, SHA2('abcdefghijklmnopqrstuvwx', 512)) FROM cliente;", db_user, db_name, db_pass)
-    nif_transportes = run_query("SELECT AES_DECRYPT(nif, SHA2('abcdefghijklmnopqrstuvwx', 512)) FROM transporte;", db_user, db_name, db_pass)
+    nif_transportes = run_query("SELECT nif FROM transporte;", db_user, db_name, db_pass)
 
     f = open(K_SALIDA, "x", encoding="utf-8")
     f = open(K_SALIDA, "a", encoding="utf-8")
@@ -65,10 +65,10 @@ def main(db_user="gi_acs128", db_name="gi_acs128", db_pass="Caramelos1998"):
         bar.next()
         n_nifs += 1
 
-        nifcli= nif_cliente[0].decode('utf-8')
+        nifcli = nif_cliente[0].decode('utf-8')
 
         try:
-            num_tarjeta_bancarias = run_query("SELECT AES_DECRYPT(nif_cliente, SHA2('abcdefghijklmnopqrstuvwx', 512)) as nif_cliente, numero \
+            num_tarjeta_bancarias = run_query("SELECT AES_DECRYPT(nif_cliente, SHA2('abcdefghijklmnopqrstuvwx', 512)) as nif_cliente, AES_DECRYPT(numero, SHA2('abcdefghijklmnopqrstuvwx', 512)) \
                                                FROM tarjeta_bancaria where nif_cliente = AES_ENCRYPT('" + nifcli + "', SHA2('abcdefghijklmnopqrstuvwx', 512));", db_user, db_name, db_pass)
         except Exception as e:
             print("Ocurrió el error: {}".format(e))
@@ -96,11 +96,10 @@ def main(db_user="gi_acs128", db_name="gi_acs128", db_pass="Caramelos1998"):
             fecha_pedido = fake.date_between(fecha_inicio, fecha_fin)        
             coste_envio = round(random.uniform(1.00, 10.00), 2)
             tiempo_envio = random.randint(1, 30)
-            i_nif_cliente = nif_cliente[0].decode('utf-8')
+            i_nif_cliente = nifcli
             nif_transporte = nif_transportes[random.randint(0, len(nif_transportes)-1)]
-            print(nif_transporte)
             
-            f.write(K_VALUES.format(id, str(total), str(fecha_pedido), str(coste_envio), str(tiempo_envio), i_nif_cliente, nif_transporte[0], str(id_dir_envio), str(id_dir_fact), num_tarjeta_bancaria))
+            f.write(K_VALUES.format(id, str(total), str(fecha_pedido), str(coste_envio), str(tiempo_envio), i_nif_cliente, nif_transporte, str(id_dir_envio), str(id_dir_fact), num_tarjeta_bancaria))
         
             j += 1
             i += 1

@@ -98,7 +98,7 @@ Alimentos enlatados
 Alimentos deshidratados
 Alimentos liofilizados
 Alimentos fermentados
-Patatas fritas
+Patatas fritas bolsa
 Nachos
 Palitos de queso
 Palomitas saladas
@@ -121,7 +121,7 @@ Barritas de frutas
 Barritas de frutos secos
 Barritas de proteínas
 Barritas de cereales con miel
-Barritas energéticas
+Barritas super energéticas
 Galletas de mantequilla
 Galletas de chocolate
 Galletas de avena

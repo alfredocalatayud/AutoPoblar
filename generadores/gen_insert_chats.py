@@ -44,8 +44,8 @@ def main():
 			fecha_2 = fake.date_between(fecha_inicio, fecha_fin)
 
 		id = str(j)
-		nif_usuario_1 = nifs[random.randint(0,1000)].replace("\n", "")
-		nif_usuario_2 = nifs[random.randint(2000,3000)].replace("\n", "")
+		nif_usuario_1 = nifs[random.randint(400, 599)].replace("\n", "")
+		nif_usuario_2 = nifs[random.randint(200, 399)].replace("\n", "")
 		f_inicio = str(fecha_1)
 		f_fin = str(fecha_2)
 

@@ -66,8 +66,7 @@ def main():
 		cuenta_bancaria = fake.iban()
 		verificado = str(random.randint(0,1))
 		logo = get_imagen("market")
-		
-		# f.write('(\'' + nifs[j].replace("\n", "") + '\', \'' + fake.company() + '\', \'' + fake.file_name(category='text', extension='pdf') + '\', \'' + fake.iban() + '\', ' + str(random.randint(0,1)) + ', \'' + 'TODO: aquí debe haber una imagen' + '\')')
+
 		f.write(K_VALUES.format(nif, razon_social, documento_acreditativo_alta, cuenta_bancaria, verificado, logo))
 		
 		i+=1 

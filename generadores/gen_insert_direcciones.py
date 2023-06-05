@@ -39,8 +39,7 @@ def main():
 		localidad = fake.city()
 		codigo_postal = fake.postcode()
 		pais = fake.country().replace('ô', 'o').replace('\'','')
-		
-		# f.write('('+ str(j) + ', \'' + nif.replace("\n", "") + '\', \'' + calle + '\', \'' + fake.building_number() + '\', \'' + puerta + '\', \'' +  fake.city() + '\', \'' + fake.postcode() + '\', \'' + fake.country().replace('ô', 'o').replace('\'','') + '\')')
+
 		f.write(K_VALUES.format(id, nif_usuario, calle, numero, puerta, localidad, codigo_postal, pais))
 		
 		i+=1 

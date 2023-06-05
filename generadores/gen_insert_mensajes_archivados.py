@@ -10,7 +10,7 @@ DB_HOST = 'bbdd.dlsi.ua.es'
 K_SALIDA = './SQL/mensajes_archivados.sql'
 K_NIFS = "./static/nifs.txt"
 K_INSERT = 'insert into mensaje_archivado (id, id_chat, nif_usuario, fecha_envio, contenido) values '
-K_VALUES = "({}, {}, '{}', '{}', AES_ENCRYPT('{}', SHA2('abcdefghijklmnopqrstuvwx', 512)))"
+K_VALUES = "({}, {}, AES_ENCRYPT('{}', SHA2('abcdefghijklmnopqrstuvwx', 512)), '{}', '{}')"
 K_DIV_INSERT = 2000
 K_N_MENSAJES = 10
 K_N_CHATS = 200
@@ -66,7 +66,7 @@ def main(db_user, db_name, db_pass):
 
             id = str(j)
             id_chat = str(id_chat)
-            nif_usuario = chat[random.randint(1,2)]
+            nif_usuario = chat[random.randint(1,2)].decode('utf-8')
             fecha_envio = str(fake.date_between(fecha_inicio, fecha_fin))
             contenido = fake.text(max_nb_chars=200)        
             

@@ -6,7 +6,7 @@ K_SALIDA = './SQL/transportes.sql'
 K_NIFS = "./static/nifs.txt"
 K_TRANSPORTES = "./static/transportes.txt"
 K_INSERT = 'insert into transporte (nif, nombre) values '
-K_VALUES = "(AES_ENCRYPT('{}', SHA2('abcdefghijklmnopqrstuvwx', 512)), '{}')"
+K_VALUES = "('{}', '{}')"
 K_DIV_INSERT = 20
 K_N_INSERT = 20
 
