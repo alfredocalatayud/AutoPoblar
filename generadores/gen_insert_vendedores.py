@@ -15,9 +15,22 @@ K_SALIDA = './SQL/vendedores.sql'
 K_NIFS = "./static/nifs.txt"
 K_LETRAS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 K_INSERT = 'insert into vendedor (nif, razon_social, documento_acreditativo_alta, cuenta_bancaria, verificado, logo) values '
-K_VALUES = "('{}', '{}', '{}', AES_ENCRYPT('{}', SHA2('abcdefghijklmnopqrstuvwx', 512)), {}, '{}')"
+K_VALUES = "(AES_ENCRYPT('{}', SHA2('abcdefghijklmnopqrstuvwx', 512)), '{}', '{}', AES_ENCRYPT('{}', SHA2('abcdefghijklmnopqrstuvwx', 512)), {}, '{}')"
 K_DIV_INSERT = 200
 K_N_PERSONAS = 200
+
+def get_imagen(category):
+    # make a request to the Unsplash API to get a random image
+	url = f"https://api.unsplash.com/photos/random?query={category}&orientation=landscape&client_id=1n7sSMtCh8Hs_MrBOjhQ1SygTDA-BJ550UdX3rwLYZQ"
+	try:
+		data = requests.get(url).json()
+		salida = data["urls"]["regular"]
+	except:
+		salida ="https://images.unsplash.com/photo-1606851181064-b7507b24377c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NDgxMTB8MHwxfHJhbmRvbXx8fHx8fHx8fDE2ODU4NzYyNTJ8&ixlib=rb-4.0.3&q=80&w=1080"
+
+
+	return(salida)
+
 
 def main():
 	fake = Faker('es_ES')
@@ -52,7 +65,7 @@ def main():
 		documento_acreditativo_alta = fake.file_name(category='text', extension='pdf')
 		cuenta_bancaria = fake.iban()
 		verificado = str(random.randint(0,1))
-		logo = fake.image_url(placeholder_url="https://loremflickr.com/{}/{}/business".format(my_width,my_height))
+		logo = get_imagen("market")
 		
 		# f.write('(\'' + nifs[j].replace("\n", "") + '\', \'' + fake.company() + '\', \'' + fake.file_name(category='text', extension='pdf') + '\', \'' + fake.iban() + '\', ' + str(random.randint(0,1)) + ', \'' + 'TODO: aquí debe haber una imagen' + '\')')
 		f.write(K_VALUES.format(nif, razon_social, documento_acreditativo_alta, cuenta_bancaria, verificado, logo))

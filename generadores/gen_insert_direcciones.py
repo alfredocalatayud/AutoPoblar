@@ -6,7 +6,7 @@ K_SALIDA = './SQL/direcciones.sql'
 K_NIFS = "./static/nifs.txt"
 K_LETRAS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 K_INSERT = 'insert into direccion (id, nif_usuario, calle, numero, puerta, localidad, codigo_postal, pais) values '
-K_VALUES = "({}, '{}', '{}', '{}', '{}', '{}', '{}', '{}')"
+K_VALUES = "({}, AES_ENCRYPT('{}', SHA2('abcdefghijklmnopqrstuvwx', 512)), '{}', '{}', '{}', '{}', '{}', '{}')"
 K_DIV_INSERT = 2000
 
 def main():

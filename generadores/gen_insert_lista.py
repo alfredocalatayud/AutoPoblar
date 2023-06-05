@@ -7,7 +7,7 @@ import random
 K_SALIDA = './SQL/listas.sql'
 K_NIFS = "./static/nifs.txt"
 K_INSERT = 'insert into lista (id, nombre, descripcion, nif_cliente) values '
-K_VALUES = "({}, '{}', '{}', '{}')"
+K_VALUES = "({}, '{}', '{}', AES_ENCRYPT('{}', SHA2('abcdefghijklmnopqrstuvwx', 512)))"
 K_DIV_INSERT = 2000
 K_N_INSERT = 2000
 

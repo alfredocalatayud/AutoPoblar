@@ -6,7 +6,7 @@ from os import remove, path
 K_SALIDA = './SQL/empleados.sql'
 K_NIFS = "./static/nifs.txt"
 K_INSERT = 'insert into empleado (nif, nombre, apellidos, fecha_nacimiento, numero_seguridad_social, cargo_empresa) values '
-K_VALUES = "('{}', '{}', '{}', '{}', '{}', '{}')"
+K_VALUES = "(AES_ENCRYPT('{}', SHA2('abcdefghijklmnopqrstuvwx', 512)), '{}', '{}', '{}', '{}', '{}')"
 K_DIV_INSERT = 200
 K_N_PERSONAS = 200
 

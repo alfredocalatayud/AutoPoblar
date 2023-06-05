@@ -47,8 +47,8 @@ def main(db_user='gi_tierra_alicante', db_name='gi_tierra_alicante2', db_pass = 
     if path.exists(K_SALIDA):
         remove(K_SALIDA)
 
-    productos = run_query('SELECT id, precio, iva, nif_vendedor FROM producto;', db_user, db_name, db_pass)
-    pedidos = run_query("SELECT nif_cliente, date_format(fecha_pedido, '%Y/%m/%d') from pedido;", db_user, db_name, db_pass)
+    productos = run_query("SELECT id, precio, iva, AES_DECRYPT(nif_vendedor, SHA2('abcdefghijklmnopqrstuvwx', 512)) FROM producto;", db_user, db_name, db_pass)
+    pedidos = run_query("SELECT AES_DECRYPT(nif_cliente, SHA2('abcdefghijklmnopqrstuvwx', 512)), date_format(fecha_pedido, '%Y/%m/%d') from pedido;", db_user, db_name, db_pass)
 
     K_N_PEDIDOS = len(pedidos)
 
@@ -87,17 +87,6 @@ def main(db_user='gi_tierra_alicante', db_name='gi_tierra_alicante2', db_pass = 
         for _ in range(0, n_lineas):
             fecha_envio = 'NULL'
             fecha_recepcion = 'NULL'
-            
-            if fake.boolean(chance_of_getting_true=75):
-                fecha_envio = fake.date_between(fecha_inicio, fecha_fin)
-                fecha_pedido = datetime.strptime(pedidos[i][1], "%Y/%m/%d")
-                while fecha_pedido.date() > fecha_envio:   
-                    fecha_envio = fake.date_between(fecha_inicio, fecha_fin)
-            
-            if fecha_envio != 'NULL' and fake.boolean(chance_of_getting_true=60):
-                fecha_recepcion = fake.date_between(fecha_inicio, fecha_fin)
-                while fecha_envio > fecha_recepcion:   
-                    fecha_recepcion = fake.date_between(fecha_inicio, fecha_fin)
 
             if tiene_cesta:
                 estado = estados[random.randint(1,len(estados)-1)]
@@ -106,6 +95,17 @@ def main(db_user='gi_tierra_alicante', db_name='gi_tierra_alicante2', db_pass = 
 
             if estado == "Cesta":
                 tiene_cesta = True
+
+            if estado in ("Enviado", "Entregado", "Devuelto", "Rechazado", "En devolucion", "Cancelado"):
+                fecha_envio = fake.date_between(fecha_inicio, fecha_fin)
+                fecha_pedido = datetime.strptime(pedidos[i][1], "%Y/%m/%d")
+                while fecha_pedido.date() > fecha_envio:   
+                    fecha_envio = fake.date_between(fecha_inicio, fecha_fin)
+            
+            if fecha_envio != 'NULL' and estado in ("Entregado", "Devuelto", "En devolucion"):
+                fecha_recepcion = fake.date_between(fecha_inicio, fecha_fin)
+                while fecha_envio > fecha_recepcion:   
+                    fecha_recepcion = fake.date_between(fecha_inicio, fecha_fin)
             
             id = str(j)
             producto = productos[fake.unique.random_int(min = 0, max = len(productos)-1)]

@@ -7,7 +7,7 @@ import random
 K_SALIDA = './SQL/chats_archivados.sql'
 K_NIFS = "./static/nifs.txt"
 K_INSERT = 'insert into chat_archivado (id, nif_usuario_1, nif_usuario_2, fecha_inicio, fecha_fin) values '
-K_VALUES = "({}, '{}', '{}', '{}', '{}')"
+K_VALUES = "({}, AES_ENCRYPT('{}', SHA2('abcdefghijklmnopqrstuvwx', 512)), AES_ENCRYPT('{}', SHA2('abcdefghijklmnopqrstuvwx', 512)), '{}', '{}')"
 K_DIV_INSERT = 200
 K_N_PERSONAS = 200
 

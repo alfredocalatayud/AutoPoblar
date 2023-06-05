@@ -14,7 +14,7 @@ import random
 K_SALIDA = './SQL/usuarios.sql'
 K_NIFS = "./static/nifs.txt"
 K_INSERT = 'insert into usuario (nif, mail, contrasenya, telefono, activo, fecha_alta) values '
-K_VALUES = "('{}', AES_ENCRYPT('{}', SHA2('abcdefghijklmnopqrstuvwx', 512)), SHA('{}'), '{}', {}, '{}')"
+K_VALUES = "(AES_ENCRYPT('{}', SHA2('abcdefghijklmnopqrstuvwx', 512)), AES_ENCRYPT('{}', SHA2('abcdefghijklmnopqrstuvwx', 512)), SHA('{}'), '{}', {}, '{}')"
 
 
 BUFFER_SIZE = 8192
