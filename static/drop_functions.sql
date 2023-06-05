@@ -1,0 +1,7 @@
+DROP FUNCTION IF EXISTS total_linea;
+DROP FUNCTION IF EXISTS base_linea;
+DROP FUNCTION IF EXISTS iva_linea;
+DROP FUNCTION IF EXISTS id_linea_pedido;
+DROP FUNCTION IF EXISTS tiene_cesta;
+DROP FUNCTION IF EXISTS obtener_id_cesta;
+DROP FUNCTION IF EXISTS calcular_relevancia;

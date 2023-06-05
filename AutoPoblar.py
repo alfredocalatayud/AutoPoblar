@@ -97,65 +97,125 @@ def insertar(db_user, db_name, db_pass, inserts):
     print("| INSERTS EN TABLAS FINALIZADO |")
     print("+------------------------------+")
 
+def ejectutaFichero(db_user, db_name, db_pass, fichero, mensaje):
+    with open(fichero, 'r') as myfile:
+        conn = mysql.connector.connect(host=DB_HOST, user=db_user, passwd=db_pass, database=db_name)
+        cursor = conn.cursor()
+        data = myfile.read()
+        cursor.execute(data)
+        print(mensaje)
+
+def datasetsPlusInserta(db_user, db_name, db_pass):
+    print("+------------------------------+")
+    print("|      GENERANDO DATASETS      |")
+    print("+------------------------------+")
+
+    # generador_dni.main()
+    # gen_insert_usuarios.main()
+    # gen_insert_categorias.main()
+    # gen_insert_clientes.main()
+    # gen_insert_direcciones.main()
+    # gen_insert_empleados.main()
+    # gen_insert_vendedores.main()
+    # gen_insert_productos.main()
+    gen_insert_tarjetas.main()
+    gen_insert_lista.main()
+    gen_insert_chats_archivados.main()
+    gen_insert_chats.main()
+    gen_insert_transportes.main()
+    gen_insert_valoraciones.main()
+    
+    insertar(db_user, db_name, db_pass, INSERTS1)
+
+    gen_insert_pedido.main(db_user, db_name, db_pass)
+    insertar(db_user, db_name, db_pass, ["pedidos.sql"])
+
+    gen_insert_lineas_pedidos.main(db_user, db_name, db_pass)
+
+    insertar(db_user, db_name, db_pass, INSERTS2)
+
+    gen_insert_lista_producto.main(db_user, db_name, db_pass)
+    gen_insert_mensajes_archivados.main(db_user, db_name, db_pass)
+    gen_insert_mensajes.main(db_user, db_name, db_pass)
+
+    insertar(db_user, db_name, db_pass, INSERTS3)
+
 def main():
+    os.system('cls')
+    print("""888b. w                                w    8                     db           w         888b.       8    8           
+8wwwP w .d88b 8d8b. Yb  dP .d88b 8d8b. w .d88 .d8b.    .d88      dPYb   8   8 w8ww .d8b. 8  .8 .d8b. 88b. 8 .d88 8d8b 
+8   b 8 8.dP' 8P Y8  YbdP  8.dP' 8P Y8 8 8  8 8' .8    8  8     dPwwYb  8b d8  8   8' .8 8wwP' 8' .8 8  8 8 8  8 8P   
+888P' 8 `Y88P 8   8   YP   `Y88P 8   8 8 `Y88 `Y8P'    `Y88    dP    Yb `Y8P8  Y8P `Y8P' 8     `Y8P' 88P' 8 `Y88 8\n""")
+
     db_user = input('Escribe tu usuario: ')
     db_name = input('Escribe tu database: ')
     db_pass = getpass.getpass('Contraseña: ')
-    eliminar = input('¿Desea vaciar tablas? (S/n): ')
-    generadores = input('¿Generar datasets? (s/N): ')
-    nifs = input('¿Generar NIFs? (s/N): ')
+    generacion_completa = input('¿Desea regenerar la BBDD completa? (s/N): ')
 
     start = timer()
 
     if not(os.path.exists("./SQL") and os.path.isdir("./SQL")):
         os.mkdir("./SQL")
 
-    if nifs in ["S", "s"]:
-        generador_dni.main()
-
-    if eliminar in ["S", "s", ""]:
-        vaciatablas(db_user, db_name, db_pass)
-
-    if generadores in ["S", "s"]:
-        # gen_insert_usuarios.main()
-        #gen_insert_categorias.main()
-        # gen_insert_clientes.main()
-        # gen_insert_direcciones.main()
-        # gen_insert_empleados.main()
-        # gen_insert_vendedores.main()
-        # gen_insert_productos.main()
-        # gen_insert_tarjetas.main()
-        # gen_insert_lista.main()
-        # gen_insert_chats_archivados.main()
-        # gen_insert_chats.main()
-        # gen_insert_transportes.main()
-        # gen_insert_valoraciones.main()
+    if generacion_completa in ["s", "S"]:
+        primera = input('¿Tienes la BBDD creada previamente? (s/N): ')
         
-        #insertar(db_user, db_name, db_pass, INSERTS1)
+        print("+--------------------------+")
+        print("|    INICIANDO CREACIÓN    |")
+        print("+--------------------------+")
 
-        gen_insert_pedido.main(db_user, db_name, db_pass)
-        insertar(db_user, db_name, db_pass, ["pedidos.sql"])
+        if primera in ["s", "S"]:
+            ejectutaFichero(db_user, db_name, db_pass, "./static/drop_triggers.sql", "¡Triggers borrados!")
+            ejectutaFichero(db_user, db_name, db_pass, "./static/drop_functions.sql", "¡Funciones borradas!")
+            ejectutaFichero(db_user, db_name, db_pass, "./static/drop_procedures.sql", "¡Procesos borrados!")
+            ejectutaFichero(db_user, db_name, db_pass, "./static/drop_events.sql", "¡Eventos borrados!")
+            ejectutaFichero(db_user, db_name, db_pass, "./static/drop_views.sql", "¡Vistas borradas!")
+            ejectutaFichero(db_user, db_name, db_pass, "./static/drop_tables.sql", "¡Tablas borradas!")
+            ejectutaFichero(db_user, db_name, db_pass, "./static/create_tables.sql", "¡Tablas creadas!")
+            ejectutaFichero(db_user, db_name, db_pass, "./static/create_tables.sql", "¡Tablas creadas!")
+            ejectutaFichero(db_user, db_name, db_pass, "./static/create_triggers1.sql", "¡Primeros triggers creados!")   
+            try:  
+                ejectutaFichero(db_user, db_name, db_pass, "./static/drop_indices.sql", "¡Indices borrados!")   
+            except:
+                print("Los indices dando por saco.")
 
-        gen_insert_lineas_pedidos.main(db_user, db_name, db_pass)
+        datasetsPlusInserta(db_user, db_name, db_pass)
 
-        insertar(db_user, db_name, db_pass, INSERTS2)
+        ejectutaFichero(db_user, db_name, db_pass, "./static/create_triggers2.sql", "¡Resto de triggers creados!")
+        ejectutaFichero(db_user, db_name, db_pass, "./static/create_functions.sql", "¡Funciones creadas!")
+        ejectutaFichero(db_user, db_name, db_pass, "./static/create_procedures.sql", "¡Procesos creados!")
+        ejectutaFichero(db_user, db_name, db_pass, "./static/create_views.sql", "¡Vistas creadas!")
+        ejectutaFichero(db_user, db_name, db_pass, "./static/create_events.sql", "¡Eventos creados!")
+        ejectutaFichero(db_user, db_name, db_pass, "./static/create_indices.sql", "¡Índices creados!")
 
-        gen_insert_lista_producto.main(db_user, db_name, db_pass)
-        gen_insert_mensajes_archivados.main(db_user, db_name, db_pass)
-        gen_insert_mensajes.main(db_user, db_name, db_pass)
+        print("+--------------------------+")
+        print("|       FIN  CREACIÓN      |")
+        print("+--------------------------+")
+    else:        
+        eliminar = input('¿Desea vaciar tablas? (S/n): ')
+        generadores = input('¿Generar datasets? (s/N): ')
+        nifs = input('¿Generar NIFs? (s/N): ')
 
-        insertar(db_user, db_name, db_pass, INSERTS3)
-    else:
-        insertar(db_user, db_name, db_pass, INSERTS1)
-        insertar(db_user, db_name, db_pass, ["pedidos.sql"])
-        insertar(db_user, db_name, db_pass, INSERTS2)
-        insertar(db_user, db_name, db_pass, INSERTS3)
+        if nifs in ["S", "s"]:
+            generador_dni.main()
+
+        if eliminar in ["S", "s", ""]:
+            vaciatablas(db_user, db_name, db_pass)
+
+        if generadores in ["S", "s"]:
+            datasetsPlusInserta(db_user, db_name, db_pass)
+
+        else:
+            insertar(db_user, db_name, db_pass, INSERTS1)
+            insertar(db_user, db_name, db_pass, ["pedidos.sql"])
+            insertar(db_user, db_name, db_pass, INSERTS2)
+            insertar(db_user, db_name, db_pass, INSERTS3)
 
     end = timer()
 
     print("Tiempo de ejecución: {}".format(timedelta(seconds=end-start)))
     input("GENERACIÓN FINALIZADA CON ÉXITO. Pulsa enter para cerrar.")
-
+    os.system('cls')
 
 if __name__ == "__main__":
 	main()

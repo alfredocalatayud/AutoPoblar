@@ -37,7 +37,7 @@ def main(db_user, db_name, db_pass):
     if path.exists(K_SALIDA):
         remove(K_SALIDA)
         
-    chats = run_query("SELECT SELECT id, AES_DECRYPT(nif_usuario_1, SHA2('abcdefghijklmnopqrstuvwx', 512)), AES_DECRYPT(nif_usuario_2, SHA2('abcdefghijklmnopqrstuvwx', 512)), fecha_inicio, fecha_fin FROM chat FROM chat", db_user, db_name, db_pass)
+    chats = run_query("SELECT id, AES_DECRYPT(nif_usuario_1, SHA2('abcdefghijklmnopqrstuvwx', 512)), AES_DECRYPT(nif_usuario_2, SHA2('abcdefghijklmnopqrstuvwx', 512)), fecha_inicio, fecha_fin FROM chat", db_user, db_name, db_pass)
 
     f = open(K_SALIDA, "x", encoding="utf-8")
     f = open(K_SALIDA, "a", encoding="utf-8")

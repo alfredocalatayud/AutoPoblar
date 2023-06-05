@@ -1,0 +1,10 @@
+drop trigger if exists linea_pedido_bi_trigger;
+drop trigger if exists linea_pedido_ai_trigger;
+drop trigger if exists linea_pedido_bu_trigger;
+drop trigger if exists linea_pedido_au_trigger;
+drop trigger if exists linea_pedido_ad_trigger;
+drop trigger if exists producto_au_trigger;
+drop trigger if exists usuario_bi_trigger;
+drop trigger if exists vendedor_au_trigger;
+drop trigger if exists mensaje_bi_trigger;
+drop trigger if exists chat_bi_trigger;

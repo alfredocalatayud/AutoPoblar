@@ -66,6 +66,7 @@ def main(db_user="gi_acs128", db_name="gi_acs128", db_pass="Caramelos1998"):
         n_nifs += 1
 
         nifcli = nif_cliente[0].decode('utf-8')
+        # print(nifcli)
 
         try:
             num_tarjeta_bancarias = run_query("SELECT AES_DECRYPT(nif_cliente, SHA2('abcdefghijklmnopqrstuvwx', 512)) as nif_cliente, AES_DECRYPT(numero, SHA2('abcdefghijklmnopqrstuvwx', 512)) \
@@ -99,7 +100,8 @@ def main(db_user="gi_acs128", db_name="gi_acs128", db_pass="Caramelos1998"):
             i_nif_cliente = nifcli
             nif_transporte = nif_transportes[random.randint(0, len(nif_transportes)-1)]
             
-            f.write(K_VALUES.format(id, str(total), str(fecha_pedido), str(coste_envio), str(tiempo_envio), i_nif_cliente, nif_transporte, str(id_dir_envio), str(id_dir_fact), num_tarjeta_bancaria))
+            # print(K_VALUES.format(id, str(total), str(fecha_pedido), str(coste_envio), str(tiempo_envio), i_nif_cliente, nif_transporte[0], str(id_dir_envio), str(id_dir_fact), num_tarjeta_bancaria.decode('utf-8')))
+            f.write(K_VALUES.format(id, str(total), str(fecha_pedido), str(coste_envio), str(tiempo_envio), i_nif_cliente, nif_transporte[0], str(id_dir_envio), str(id_dir_fact), num_tarjeta_bancaria.decode('utf-8')))
         
             j += 1
             i += 1
