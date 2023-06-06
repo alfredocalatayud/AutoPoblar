@@ -273,7 +273,7 @@ CREATE OR REPLACE TABLE mensaje ( -- Revisado
     id_chat int UNSIGNED NOT NULL, 
     nif_usuario VARBINARY(255) NOT NULL, -- Encriptado AES habilitado
     fecha_envio datetime NOT NULL, 
-    contenido varchar(2500), 
+    contenido blob,
     CONSTRAINT pk_mensaje 
         PRIMARY KEY (id), 
     CONSTRAINT fk_mensaje_usuario 
@@ -309,7 +309,7 @@ CREATE OR REPLACE TABLE mensaje_archivado ( -- Revisado
     id_chat int NOT NULL, 
     nif_usuario VARBINARY(255) NOT NULL, -- Encriptado AES habilitado
     fecha_envio datetime NOT NULL, 
-    contenido varchar(2500), 
+    contenido blob,
     CONSTRAINT pk_mensaje_archivado 
         PRIMARY KEY (id), 
     CONSTRAINT fk_mensaje_archivado_usuario 

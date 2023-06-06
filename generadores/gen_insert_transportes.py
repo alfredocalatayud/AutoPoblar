@@ -3,7 +3,7 @@ from progress.bar import Bar
 from os import remove, path
 
 K_SALIDA = './SQL/transportes.sql'
-K_NIFS = "./static/nifs.txt"
+K_NIFS = "./static/nifs_transporte.txt"
 K_TRANSPORTES = "./static/transportes.txt"
 K_INSERT = 'insert into transporte (nif, nombre) values '
 K_VALUES = "('{}', '{}')"
@@ -21,7 +21,7 @@ def main():
 	f = open(K_SALIDA, "a", encoding="utf-8")
 
 	fichero_nifs = open(K_NIFS, encoding="utf-8")
-	nifs = fichero_nifs.readlines()
+	nifs_transporte = fichero_nifs.readlines()
 
 	fichero_transportes = open(K_TRANSPORTES, encoding="utf-8")
 	transportes = fichero_transportes.readlines()
@@ -32,12 +32,12 @@ def main():
 
 	i=0
 	j=1
-	k = 600
+	k = 0
 
 	for transporte in transportes:
 		bar.next() 
 
-		nif =  nifs[k].replace("\n", "")
+		nif = nifs_transporte[k].replace("\n", "")
 		nombre = transporte.replace("\n", "")
 		
 		f.write(K_VALUES.format(nif, nombre))

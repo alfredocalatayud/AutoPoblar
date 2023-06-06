@@ -101,7 +101,7 @@ def main(db_user="gi_acs128", db_name="gi_acs128", db_pass="Caramelos1998"):
             nif_transporte = nif_transportes[random.randint(0, len(nif_transportes)-1)]
             
             # print(K_VALUES.format(id, str(total), str(fecha_pedido), str(coste_envio), str(tiempo_envio), i_nif_cliente, nif_transporte[0], str(id_dir_envio), str(id_dir_fact), num_tarjeta_bancaria.decode('utf-8')))
-            f.write(K_VALUES.format(id, str(total), str(fecha_pedido), str(coste_envio), str(tiempo_envio), i_nif_cliente, nif_transporte[0], str(id_dir_envio), str(id_dir_fact), num_tarjeta_bancaria.decode('utf-8')))
+            f.write(K_VALUES.format(id, str(total), str(fecha_pedido), str(coste_envio), str(tiempo_envio), i_nif_cliente, nif_transporte[0], str(id_dir_envio), str(id_dir_fact), num_tarjeta_bancaria))
         
             j += 1
             i += 1
