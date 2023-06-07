@@ -2,7 +2,7 @@ set foreign_key_checks = 0;
 
 CREATE OR REPLACE TABLE usuario ( -- Revisado
     nif VARBINARY(255) NOT NULL, -- Encriptado AES habilitado
-    mail blob NOT NULL, -- Encriptado AES habilitado
+    mail VARBINARY(255) NOT NULL, -- Encriptado AES habilitado
     contrasenya varchar(150) NOT NULL, 
     telefono varchar(50) NOT NULL, 
     activo boolean NOT NULL, 
@@ -173,8 +173,8 @@ CREATE OR REPLACE TABLE valoracion ( -- Revisado
 );
 
 CREATE OR REPLACE TABLE tarjeta_bancaria ( -- Revisado
-    numero varchar(256) NOT NULL, -- No necesita encriptación al no asociarse a un usuario (si NIF encriptado) - Clave primaria
-    titular varchar(256) NOT NULL, -- No necesita encriptación al no asociarse a un usuario (si NIF encriptado)
+    numero VARBINARY(255) NOT NULL, -- No necesita encriptación al no asociarse a un usuario (si NIF encriptado) - Clave primaria
+    titular blob, -- No necesita encriptación al no asociarse a un usuario (si NIF encriptado)
     cvv varchar(3) NOT NULL, 
     fecha_caducidad date NOT NULL, 
     nif_cliente VARBINARY(255) NOT NULL, -- Encriptado AES habilitado
@@ -207,7 +207,7 @@ CREATE OR REPLACE TABLE pedido ( -- Revisado
     nif_transporte varchar(9), 
     id_dir_envio int UNSIGNED, 
     id_dir_fact int UNSIGNED, 
-    num_tarjeta_bancaria varchar(256), -- Necesita encriptación (ver encriptación de tarjeta bancaria) - Se puede relacionar datos Cliente y Tarjeta
+    num_tarjeta_bancaria VARBINARY(255) NOT NULL, -- Necesita encriptación (ver encriptación de tarjeta bancaria) - Se puede relacionar datos Cliente y Tarjeta
     CONSTRAINT pk_pedido 
         PRIMARY KEY (id), 
     CONSTRAINT fk_pedido_cliente 
@@ -320,4 +320,7 @@ CREATE OR REPLACE TABLE mensaje_archivado ( -- Revisado
         FOREIGN KEY (id_chat) 
         REFERENCES chat_archivado(id)
 );
+
+commit;
+
 set foreign_key_checks = 1;

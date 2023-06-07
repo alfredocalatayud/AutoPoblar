@@ -84,67 +84,66 @@ def insertar(db_user, db_name, db_pass, inserts):
         print('Insertando {}...'.format(tabla))
         sql_file = "./SQL/{}".format(tabla)
 
-        # fd = open(ttabla, encoding="latin-1")
-        # archivosql = fd.read()
-        # sqlcommands = [elemento + ';' for elemento in archivosql.split(';')]
-        # sqlcommands.pop()
-
-        # run_query(sqlcommands, db_user, db_name, db_pass)
-
         with open(sql_file, encoding="latin-1") as file:
             sql_commands = file.read().split(';')[:-1]
 
         run_query(sql_commands, db_user, db_name, db_pass)
 
-        # fd.close()
-        
-        
-
     print("+------------------------------+")
     print("| INSERTS EN TABLAS FINALIZADO |")
     print("+------------------------------+")
 
+def insertaFichero(db_user, db_name, db_pass, ficheros):
+    for fichero in ficheros:
+        ejectutaFichero(db_user, db_name, db_pass, "./SQL/{}".format(fichero), "Insertando {}".format(fichero))
+
 def ejectutaFichero(db_user, db_name, db_pass, fichero, mensaje):
+    print(mensaje)
     with open(fichero, 'r') as myfile:
         conn = mysql.connector.connect(host=DB_HOST, user=db_user, passwd=db_pass, database=db_name)
         cursor = conn.cursor()
         data = myfile.read()
         cursor.execute(data)
-        print(mensaje)
 
 def datasetsPlusInserta(db_user, db_name, db_pass):
     print("+------------------------------+")
     print("|      GENERANDO DATASETS      |")
     print("+------------------------------+")
 
-    generador_dni.main()
-    gen_insert_usuarios.main()
-    gen_insert_categorias.main()
-    gen_insert_clientes.main()
-    gen_insert_direcciones.main()
-    gen_insert_empleados.main()
-    gen_insert_vendedores.main()
-    gen_insert_productos.main()
-    gen_insert_tarjetas.main()
-    gen_insert_lista.main()
-    gen_insert_chats_archivados.main()
-    gen_insert_chats.main()
-    gen_insert_transportes.main()
-    gen_insert_valoraciones.main()
+    # generador_dni.main()
+    # gen_insert_usuarios.main()
+    # gen_insert_categorias.main()
+    # gen_insert_clientes.main()
+    # gen_insert_direcciones.main()
+    # gen_insert_empleados.main()
+    # gen_insert_vendedores.main()
+    # gen_insert_productos.main()
+    # gen_insert_tarjetas.main()
+    # gen_insert_lista.main()
+    # gen_insert_chats_archivados.main()
+    # gen_insert_chats.main()
+    # gen_insert_transportes.main()
+    # gen_insert_valoraciones.main()
     
     insertar(db_user, db_name, db_pass, INSERTS1)
 
-    gen_insert_pedido.main(db_user, db_name, db_pass)
+    # gen_insert_pedido.main(db_user, db_name, db_pass)
     insertar(db_user, db_name, db_pass, ["pedidos.sql"])
 
-    gen_insert_lineas_pedidos.main(db_user, db_name, db_pass)
+    # gen_insert_lineas_pedidos.main(db_user, db_name, db_pass)
 
     insertar(db_user, db_name, db_pass, INSERTS2)
 
-    gen_insert_lista_producto.main(db_user, db_name, db_pass)
-    gen_insert_mensajes_archivados.main(db_user, db_name, db_pass)
-    gen_insert_mensajes.main(db_user, db_name, db_pass)
+    # gen_insert_lista_producto.main(db_user, db_name, db_pass)
+    # gen_insert_mensajes_archivados.main(db_user, db_name, db_pass)
+    # gen_insert_mensajes.main(db_user, db_name, db_pass)
 
+    insertar(db_user, db_name, db_pass, INSERTS3)
+
+def insertaTodo(db_user, db_name, db_pass):
+    insertar(db_user, db_name, db_pass, INSERTS1)
+    insertar(db_user, db_name, db_pass, ["pedidos.sql"])
+    insertar(db_user, db_name, db_pass, INSERTS2)
     insertar(db_user, db_name, db_pass, INSERTS3)
 
 def numTablas(db_user, db_name, db_pass):
@@ -155,7 +154,10 @@ def numTablas(db_user, db_name, db_pass):
 
     salida = cursor.fetchall()
 
-    return(salida[0][0])
+    try:
+        return(salida[0][0])
+    except IndexError:
+        return 0
 
 def pruebaConexion(db_user, db_name, db_pass):
     try:
@@ -167,11 +169,7 @@ def pruebaConexion(db_user, db_name, db_pass):
         return False
 
 def main():
-    try:
-        os.system('clear')
-    except:
-        os.system('clear')
-
+    os.system('clear')
 
     while True:
         print(TITULO)
@@ -184,41 +182,36 @@ def main():
 
     generacion_completa = input('¿Desea regenerar la BBDD completa? (s/N): ')
 
-    start = timer()
-
     if not(os.path.exists("./SQL") and os.path.isdir("./SQL")):
         os.mkdir("./SQL")
 
-    if generacion_completa in ["s", "S"]:
-        primera = input('¿Tienes la BBDD creada previamente? (s/N): ')
-        
+    start = timer()
+
+    if generacion_completa in ["s", "S"]:    
         print("+--------------------------+")
         print("|    INICIANDO CREACIÓN    |")
         print("+--------------------------+")
 
-        if primera in ["s", "S"]:
-            ejectutaFichero(db_user, db_name, db_pass, "./static/drop_triggers.sql", "¡Borrando triggers!")
-            ejectutaFichero(db_user, db_name, db_pass, "./static/drop_functions.sql", "¡Borrando funciones!")
-            ejectutaFichero(db_user, db_name, db_pass, "./static/drop_procedures.sql", "¡Borrando procesos!")
-            ejectutaFichero(db_user, db_name, db_pass, "./static/drop_events.sql", "¡Borrando eventos!")
-            ejectutaFichero(db_user, db_name, db_pass, "./static/drop_views.sql", "¡Borrando vistas!")
-            ejectutaFichero(db_user, db_name, db_pass, "./static/drop_tables.sql", "¡Borrando tablas!")
-            ejectutaFichero(db_user, db_name, db_pass, "./static/create_tables.sql", "¡Creando tablas!")
+        ejectutaFichero(db_user, db_name, db_pass, "./static/drop_triggers.sql", "¡Borrando triggers!")
+        ejectutaFichero(db_user, db_name, db_pass, "./static/drop_functions.sql", "¡Borrando funciones!")
+        ejectutaFichero(db_user, db_name, db_pass, "./static/drop_procedures.sql", "¡Borrando procesos!")
+        ejectutaFichero(db_user, db_name, db_pass, "./static/drop_events.sql", "¡Borrando eventos!")
+        ejectutaFichero(db_user, db_name, db_pass, "./static/drop_views.sql", "¡Borrando vistas!")
+        ejectutaFichero(db_user, db_name, db_pass, "./static/drop_tables.sql", "¡Borrando tablas!")
+        ejectutaFichero(db_user, db_name, db_pass, "./static/create_tables.sql", "¡Creando tablas!")
+        time.sleep(15)
+        tablas = numTablas(db_user, db_name, db_pass)
+
+        while(tablas < 18):
+            ejectutaFichero(db_user, db_name, db_pass, "./static/create_tables.sql", "Reinsertando tablas")
             time.sleep(15)
             tablas = numTablas(db_user, db_name, db_pass)
 
-            while(tablas < 18):
-                ejectutaFichero(db_user, db_name, db_pass, "./static/create_tables.sql", "Reinsertando tablas")
-                time.sleep(15)
-                tablas = numTablas(db_user, db_name, db_pass)
+        ejectutaFichero(db_user, db_name, db_pass, "./static/create_triggers1.sql", "¡Primeros triggers creados!")   
+        ejectutaFichero(db_user, db_name, db_pass, "./static/drop_indices.sql", "¡Indices borrados!")   
 
-            ejectutaFichero(db_user, db_name, db_pass, "./static/create_triggers1.sql", "¡Primeros triggers creados!")   
-            try:  
-                ejectutaFichero(db_user, db_name, db_pass, "./static/drop_indices.sql", "¡Indices borrados!")   
-            except:
-                print("Los indices dando por saco.")
-
-        datasetsPlusInserta(db_user, db_name, db_pass)
+        # datasetsPlusInserta(db_user, db_name, db_pass)
+        insertaTodo(db_user, db_name, db_pass)
 
         ejectutaFichero(db_user, db_name, db_pass, "./static/create_triggers2.sql", "¡Resto de triggers creados!")
         ejectutaFichero(db_user, db_name, db_pass, "./static/create_functions.sql", "¡Funciones creadas!")
@@ -245,10 +238,14 @@ def main():
             datasetsPlusInserta(db_user, db_name, db_pass)
 
         else:
-            insertar(db_user, db_name, db_pass, INSERTS1)
-            insertar(db_user, db_name, db_pass, ["pedidos.sql"])
-            insertar(db_user, db_name, db_pass, INSERTS2)
-            insertar(db_user, db_name, db_pass, INSERTS3)
+            # insertar(db_user, db_name, db_pass, INSERTS1)
+            # insertar(db_user, db_name, db_pass, ["pedidos.sql"])
+            # insertar(db_user, db_name, db_pass, INSERTS2)
+            # insertar(db_user, db_name, db_pass, INSERTS3)
+            insertaFichero(db_user, db_name, db_pass, INSERTS1)
+            insertaFichero(db_user, db_name, db_pass, ["pedidos.sql"])
+            insertaFichero(db_user, db_name, db_pass, INSERTS2)
+            insertaFichero(db_user, db_name, db_pass, INSERTS3)
 
     end = timer()
 
