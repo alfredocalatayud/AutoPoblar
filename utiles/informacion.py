@@ -1,6 +1,13 @@
+import sys
+import platform
 from tabulate import tabulate
 import mysql.connector
 import os
+
+if sys.platform.startswith('win'):
+    LIMPIAR = "cls"
+else:
+    LIMPIAR = "clear"
 
 DB_HOST = 'bbdd.dlsi.ua.es'
 TITULO = """888b. w                                w    8                     db           w         888b.       8    8           
@@ -19,7 +26,7 @@ def informacionTabla(db_user, db_name, db_pass):
     
     resultado = cursor.fetchall()
 
-    os.system('clear')
+    os.system(LIMPIAR)
     print(TITULO)
 
     print("+----------------------------+")

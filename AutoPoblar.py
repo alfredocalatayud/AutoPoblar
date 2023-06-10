@@ -1,3 +1,5 @@
+import sys
+import platform
 import time
 import mysql.connector
 import getpass
@@ -11,6 +13,10 @@ from generadores import gen_insert_lista_producto, gen_insert_lista, gen_insert_
 from generadores import gen_insert_transportes, gen_insert_usuarios, gen_insert_valoraciones, gen_insert_vendedores, generador_dni
 from utiles import informacion as info
 
+if sys.platform.startswith('win'):
+    LIMPIAR = "cls"
+else:
+    LIMPIAR = "clear" 
 
 DB_HOST = 'bbdd.dlsi.ua.es'
 K_DELETE = "./static/delete.txt"
@@ -166,7 +172,17 @@ def pruebaConexion(db_user, db_name, db_pass):
     try:
         mysql.connector.connect(host=DB_HOST, user=db_user, passwd=db_pass, database=db_name)
         return True
-    except mysql.connector.errors.DatabaseError as e:
+    except mysql.connector.errors.InterfaceError  as interno:
+        print("\n")
+        if interno.errno == 1044:
+            input("Error: Base de datos no accesible. Vuelve a intentarlo...")    
+        elif interno.errno == 1045:
+            input("Error: Usuario o contraseña incorrectos. Vuelve a intentarlo...")
+        elif interno.errno == 2003:
+            input("Error: Comprueba el estado del puerto. Vuelve a intentarlo...")
+        else:
+            print(interno)
+    except mysql.connector.errors.DatabaseError  as e:
         print("\n")
         if e.errno == 1044:
             input("Error: Base de datos no accesible. Vuelve a intentarlo...")    
@@ -176,12 +192,12 @@ def pruebaConexion(db_user, db_name, db_pass):
             input("Error: Comprueba el estado del puerto. Vuelve a intentarlo...")
         else:
             print(e)
-
-        os.system('clear')
-        return False
+    
+    os.system(LIMPIAR)
+    return False
 
 def generacionCompleta(db_user, db_name, db_pass):
-    os.system('clear')
+    os.system(LIMPIAR)
     print(TITULO)
 
     if not(os.path.exists("./SQL") and os.path.isdir("./SQL")):
@@ -234,7 +250,7 @@ def generacionCompleta(db_user, db_name, db_pass):
 
     print("Tiempo de ejecución: {}".format(timedelta(seconds=end-start)))
     input("GENERACIÓN FINALIZADA CON ÉXITO. Pulsa enter para cerrar.")
-    os.system('clear')
+    os.system(LIMPIAR)
 
 def insertaDatasets(db_user, db_name, db_pass):
     # insertar(db_user, db_name, db_pass, INSERTS1)
@@ -252,7 +268,7 @@ def insertaDatasets(db_user, db_name, db_pass):
 def informacionBBDD(db_user, db_name, db_pass):
     option = ""
     while option != "X":
-        os.system('clear')
+        os.system(LIMPIAR)
         print(TITULO)
 
         print("+--------------------+")
@@ -290,7 +306,7 @@ def informacionBBDD(db_user, db_name, db_pass):
 
 def inicioSesion():
     while True:
-        os.system('clear')
+        os.system(LIMPIAR)
         print(TITULO)
         db_user = input('Escribe tu usuario: ')
         db_name = input('Escribe tu database: ')
@@ -304,7 +320,7 @@ def menu():
     sesion = False
     option = ""
     while option != "X":
-        os.system('clear')
+        os.system(LIMPIAR)
         print(TITULO)
 
         print("+--------+")
@@ -338,7 +354,7 @@ def menu():
             elif option == "3":
                 continuar = input("\nEsta opción eliminará los datos de la BBDD. ¿Desea continuar? (S/n): ")
                 if continuar in ["S", "s", ""]:
-                    os.system('clear')
+                    os.system(LIMPIAR)
                     print(TITULO)
                     vaciatablas(bbdd[0], bbdd[1], bbdd[2])
                     input("\n¡Información borrada con éxito! Pulsa enter para volver al menú...")
@@ -353,7 +369,7 @@ def menu():
             else:
                 input("\nOpción no válida...")
     
-    os.system('clear')
+    os.system(LIMPIAR)
 
 
 def main():
