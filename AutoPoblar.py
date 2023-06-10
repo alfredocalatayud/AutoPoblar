@@ -33,8 +33,7 @@ TITULO = """888b. w                                w    8                     db
 8   b 8 8.dP' 8P Y8  YbdP  8.dP' 8P Y8 8 8  8 8' .8    8  8     dPwwYb  8b d8  8   8' .8 8wwP' 8' .8 8  8 8 8  8 8P   
 888P' 8 `Y88P 8   8   YP   `Y88P 8   8 8 `Y88 `Y8P'    `Y88    dP    Yb `Y8P8  Y8P `Y8P' 8     `Y8P' 88P' 8 `Y88 8\n"""
 
-def run_query(querys, db_user, db_name, db_pass):
-    conn = mysql.connector.connect(host=DB_HOST, user=db_user, passwd=db_pass, database=db_name)
+def run_query(querys, conn):
     cursor = conn.cursor()
     cursor.execute("SET NAMES utf8;")
     cursor.execute("SET CHARACTER SET utf8;")
@@ -56,34 +55,58 @@ def run_query(querys, db_user, db_name, db_pass):
     cursor.close()
     conn.close()
 
-def vaciatablas(db_user, db_name, db_pass):
+def vaciatablas(conn):
     setter1 = "SET FOREIGN_KEY_CHECKS=0;"
     setter2 = "SET FOREIGN_KEY_CHECKS=1;"
 
-    # fichero_deletes = open(K_DELETE)
-    # deletes = fichero_deletes.readlines()
-    # fdeletes = []
-
-    # for delete in deletes:
-    #     fdeletes.append(delete.format(db_name).replace("\n", ""))
-    #     # run_query(setter1, db_user, db_name, db_pass)        
-    #     # run_query(setter2, db_user, db_name, db_pass)
-
     with open(K_DELETE) as file:
-        deletes = [line.strip().format(db_name) for line in file]
+        deletes = [line.strip().format(conn.database) for line in file]
 
     print("+--------------------------+")
     print("| INICIO BORRADO DE TABLAS |")
     print("+--------------------------+")
 
-    run_query(deletes, db_user, db_name, db_pass)
+    run_query(deletes, conn)
 
     print("+------------------------------+")
     print("| BORRADO DE TABLAS FINALIZADO |")
     print("+------------------------------+")
 
+def newVaciaTablas(conn):
+    cursor = conn.cursor()
 
-def insertar(db_user, db_name, db_pass, inserts):
+    with open(K_DELETE) as file:
+        deletes = [line.strip() for line in file]
+    
+    print("+--------------------------+")
+    print("| INICIO BORRADO DE TABLAS |")
+    print("+--------------------------+")
+
+    bar = Bar('     Procesando', max=len(deletes))
+
+    for delete in deletes:
+        t_lote = 10000
+        offset = 0
+
+        while True:
+            cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
+            cursor.execute(delete.format(conn.database, t_lote))
+            cursor.execute("SET FOREIGN_KEY_CHECKS=1;")
+            cursor.execute("commit;")
+
+            print(cursor.rowcount)
+            if cursor.rowcount < t_lote:
+                break
+                
+            offset += t_lote   
+        bar.next()
+    bar.finish()
+
+    print("+------------------------------+")
+    print("| BORRADO DE TABLAS FINALIZADO |")
+    print("+------------------------------+")
+
+def insertar(conn, inserts):
     print("+--------------------------+")
     print("| INICIO INSERTS EN TABLAS |")
     print("+--------------------------+")
@@ -95,26 +118,25 @@ def insertar(db_user, db_name, db_pass, inserts):
         with open(sql_file, encoding="latin-1") as file:
             sql_commands = file.read().split(';')[:-1]
 
-        run_query(sql_commands, db_user, db_name, db_pass)
+        run_query(sql_commands, conn)
 
     print("+------------------------------+")
     print("| INSERTS EN TABLAS FINALIZADO |")
     print("+------------------------------+")
 
-def insertaFichero(db_user, db_name, db_pass, ficheros):
+def insertaFichero(conn, ficheros):
     for fichero in ficheros:
-        ejectutaFichero(db_user, db_name, db_pass, "./SQL/{}".format(fichero), "Insertando {}".format(fichero))
+        ejectutaFichero(conn, "./SQL/{}".format(fichero), "Insertando {}".format(fichero))
 
-def ejectutaFichero(db_user, db_name, db_pass, fichero, mensaje):
+def ejectutaFichero(conn, fichero, mensaje):
     print(mensaje)
     with open(fichero, 'r') as myfile:
-        conn = mysql.connector.connect(host=DB_HOST, user=db_user, passwd=db_pass, database=db_name)
         cursor = conn.cursor()
         data = myfile.read()
         cursor.execute(data)
 
 
-def datasetsPlusInserta(db_user, db_name, db_pass):
+def datasetsPlusInserta(conn):
     print("+------------------------------+")
     print("|      GENERANDO DATASETS      |")
     print("+------------------------------+")
@@ -134,32 +156,31 @@ def datasetsPlusInserta(db_user, db_name, db_pass):
     gen_insert_transportes.main()
     gen_insert_valoraciones.main()
     
-    insertar(db_user, db_name, db_pass, INSERTS1)
+    insertar(conn, INSERTS1)
 
-    gen_insert_pedido.main(db_user, db_name, db_pass)
-    insertar(db_user, db_name, db_pass, ["pedidos.sql"])
+    gen_insert_pedido.main(conn)
+    insertar(conn, ["pedidos.sql"])
 
-    gen_insert_lineas_pedidos.main(db_user, db_name, db_pass)
+    gen_insert_lineas_pedidos.main(conn)
 
-    insertar(db_user, db_name, db_pass, INSERTS2)
+    insertar(conn, INSERTS2)
 
-    gen_insert_lista_producto.main(db_user, db_name, db_pass)
-    gen_insert_mensajes_archivados.main(db_user, db_name, db_pass)
-    gen_insert_mensajes.main(db_user, db_name, db_pass)
+    gen_insert_lista_producto.main(conn)
+    gen_insert_mensajes_archivados.main(conn)
+    gen_insert_mensajes.main(conn)
 
-    insertar(db_user, db_name, db_pass, INSERTS3)
+    insertar(conn, INSERTS3)
 
-def insertaTodo(db_user, db_name, db_pass):
-    insertar(db_user, db_name, db_pass, INSERTS1)
-    insertar(db_user, db_name, db_pass, ["pedidos.sql"])
-    insertar(db_user, db_name, db_pass, INSERTS2)
-    insertar(db_user, db_name, db_pass, INSERTS3)
+def insertaTodo(conn):
+    insertar(conn, INSERTS1)
+    insertar(conn, ["pedidos.sql"])
+    insertar(conn, INSERTS2)
+    insertar(conn, INSERTS3)
 
-def numTablas(db_user, db_name, db_pass):
-    conn = mysql.connector.connect(host=DB_HOST, user=db_user, passwd=db_pass, database=db_name)
+def numTablas(conn):
     cursor = conn.cursor()
 
-    cursor.execute("select count(*) as tables from information_schema.tables where table_type = 'BASE TABLE' and table_schema not in ('information_schema', 'sys', 'performance_schema', 'mysql') and TABLE_SCHEMA = '{}' group by table_schema order by table_schema;".format(db_name))
+    cursor.execute("select count(*) as tables from information_schema.tables where table_type = 'BASE TABLE' and table_schema not in ('information_schema', 'sys', 'performance_schema', 'mysql') and TABLE_SCHEMA = '{}' group by table_schema order by table_schema;".format(conn.database))
 
     salida = cursor.fetchall()
 
@@ -196,7 +217,7 @@ def pruebaConexion(db_user, db_name, db_pass):
     os.system(LIMPIAR)
     return False
 
-def generacionCompleta(db_user, db_name, db_pass):
+def generacionCompleta(conn):
     os.system(LIMPIAR)
     print(TITULO)
 
@@ -209,38 +230,38 @@ def generacionCompleta(db_user, db_name, db_pass):
     print("|    INICIANDO CREACIÓN    |")
     print("+--------------------------+")
 
-    ejectutaFichero(db_user, db_name, db_pass, "./static/drop_triggers.sql", "¡Borrando triggers!")
-    ejectutaFichero(db_user, db_name, db_pass, "./static/drop_functions.sql", "¡Borrando funciones!")
-    ejectutaFichero(db_user, db_name, db_pass, "./static/drop_procedures.sql", "¡Borrando procesos!")
-    ejectutaFichero(db_user, db_name, db_pass, "./static/drop_events.sql", "¡Borrando eventos!")
-    ejectutaFichero(db_user, db_name, db_pass, "./static/drop_views.sql", "¡Borrando vistas!")
-    ejectutaFichero(db_user, db_name, db_pass, "./static/drop_tables.sql", "¡Borrando tablas!")
+    ejectutaFichero(conn, "./static/drop_triggers.sql", "¡Borrando triggers!")
+    ejectutaFichero(conn, "./static/drop_functions.sql", "¡Borrando funciones!")
+    ejectutaFichero(conn, "./static/drop_procedures.sql", "¡Borrando procesos!")
+    ejectutaFichero(conn, "./static/drop_events.sql", "¡Borrando eventos!")
+    ejectutaFichero(conn, "./static/drop_views.sql", "¡Borrando vistas!")
+    ejectutaFichero(conn, "./static/drop_tables.sql", "¡Borrando tablas!")
     try:
-        ejectutaFichero(db_user, db_name, db_pass, "./static/drop_indices.sql", "¡Borrando indices!")   
+        ejectutaFichero(conn, "./static/drop_indices.sql", "¡Borrando indices!")   
     except:
         print("No es necesario borrar índices")
         pass
 
-    ejectutaFichero(db_user, db_name, db_pass, "./static/create_tables.sql", "¡Creando tablas!")
+    ejectutaFichero(conn, "./static/create_tables.sql", "¡Creando tablas!")
     time.sleep(15)
-    tablas = numTablas(db_user, db_name, db_pass)
+    tablas = numTablas(conn)
 
     while(tablas < 18):
-        ejectutaFichero(db_user, db_name, db_pass, "./static/create_tables.sql", "Creación de tablas en progreso...")
+        ejectutaFichero(conn, "./static/create_tables.sql", "Creación de tablas en progreso...")
         time.sleep(15)
-        tablas = numTablas(db_user, db_name, db_pass)
+        tablas = numTablas(conn)
 
-    ejectutaFichero(db_user, db_name, db_pass, "./static/create_triggers1.sql", "¡Primeros triggers creados!")   
+    ejectutaFichero(conn, "./static/create_triggers1.sql", "¡Primeros triggers creados!")   
 
-    datasetsPlusInserta(db_user, db_name, db_pass)
+    datasetsPlusInserta(conn)
     #insertaTodo(db_user, db_name, db_pass)
 
-    ejectutaFichero(db_user, db_name, db_pass, "./static/create_triggers2.sql", "¡Resto de triggers creados!")
-    ejectutaFichero(db_user, db_name, db_pass, "./static/create_functions.sql", "¡Funciones creadas!")
-    ejectutaFichero(db_user, db_name, db_pass, "./static/create_procedures.sql", "¡Procesos creados!")
-    ejectutaFichero(db_user, db_name, db_pass, "./static/create_views.sql", "¡Vistas creadas!")
-    ejectutaFichero(db_user, db_name, db_pass, "./static/create_events.sql", "¡Eventos creados!")
-    ejectutaFichero(db_user, db_name, db_pass, "./static/create_indices.sql", "¡Índices creados!")
+    ejectutaFichero(conn, "./static/create_triggers2.sql", "¡Resto de triggers creados!")
+    ejectutaFichero(conn, "./static/create_functions.sql", "¡Funciones creadas!")
+    ejectutaFichero(conn, "./static/create_procedures.sql", "¡Procesos creados!")
+    ejectutaFichero(conn, "./static/create_views.sql", "¡Vistas creadas!")
+    ejectutaFichero(conn, "./static/create_events.sql", "¡Eventos creados!")
+    ejectutaFichero(conn, "./static/create_indices.sql", "¡Índices creados!")
 
     print("+--------------------------+")
     print("|       FIN  CREACIÓN      |")
@@ -252,20 +273,20 @@ def generacionCompleta(db_user, db_name, db_pass):
     input("GENERACIÓN FINALIZADA CON ÉXITO. Pulsa enter para cerrar.")
     os.system(LIMPIAR)
 
-def insertaDatasets(db_user, db_name, db_pass):
+def insertaDatasets(conn):
     # insertar(db_user, db_name, db_pass, INSERTS1)
     # insertar(db_user, db_name, db_pass, ["pedidos.sql"])
     # insertar(db_user, db_name, db_pass, INSERTS2)
     # insertar(db_user, db_name, db_pass, INSERTS3)
 
-    insertar(db_user, db_name, db_pass, INSERTS1 + ["pedidos.sql"] + INSERTS2 + INSERTS3)
+    insertar(conn, INSERTS1 + ["pedidos.sql"] + INSERTS2 + INSERTS3)
 
     # insertaFichero(db_user, db_name, db_pass, INSERTS1)
     # insertaFichero(db_user, db_name, db_pass, ["pedidos.sql"])
     # insertaFichero(db_user, db_name, db_pass, INSERTS2)
     # insertaFichero(db_user, db_name, db_pass, INSERTS3)
 
-def informacionBBDD(db_user, db_name, db_pass):
+def informacionBBDD(conn):
     option = ""
     while option != "X":
         os.system(LIMPIAR)
@@ -289,17 +310,17 @@ def informacionBBDD(db_user, db_name, db_pass):
             return 0
 
         if option == "0":
-            info.informacionTabla(db_user, db_name, db_pass)
+            info.informacionTabla(conn)
         elif option == "1":
-            info.nformacionVistas(db_user, db_name, db_pass)
+            info.informacionVistas(conn)
         elif option == "2":
-            info.informacionTriggers(db_user, db_name, db_pass)
+            info.informacionTriggers(conn)
         elif option == "3":
-            info.informacionFuncion(db_user, db_name, db_pass)
+            info.informacionFuncion(conn)
         elif option == "4":
-            info.informacionProcesos(db_user, db_name, db_pass)
+            info.informacionProcesos(conn)
         elif option == "5":
-            info.informacionEventos(db_user, db_name, db_pass)
+            info.informacionEventos(conn)
         else:
             input("\nOpción no válida...")
 
@@ -312,9 +333,11 @@ def inicioSesion():
         db_name = input('Escribe tu database: ')
         db_pass = getpass.getpass('Contraseña: ')
 
-        if pruebaConexion(db_user, db_name, db_pass):
+        sesion = pruebaConexion(db_user, db_name, db_pass)
+
+        if sesion:
             input("\n¡Sesión iniciada correctamente! Pulsa enter para volver al menú...")
-            return [db_user, db_name, db_pass]
+            return sesion
 
 def menu():
     sesion = False
@@ -340,7 +363,7 @@ def menu():
             break
 
         if option == "0":
-            bbdd = inicioSesion()
+            conn = inicioSesion()
             sesion = True
         elif (not sesion):
             input("\nEs necesario iniciar sesión primero...")
@@ -348,7 +371,7 @@ def menu():
             if option == "1":
                 continuar = input("\nEsta opción eliminará cualquier información existente en la BBDD. ¿Desea continuar? (S/n): ")
                 if continuar in ["S", "s", ""]:
-                    generacionCompleta(bbdd[0], bbdd[1], bbdd[2])
+                    generacionCompleta(conn)
             elif option == "2":
                 pass
             elif option == "3":
@@ -356,16 +379,16 @@ def menu():
                 if continuar in ["S", "s", ""]:
                     os.system(LIMPIAR)
                     print(TITULO)
-                    vaciatablas(bbdd[0], bbdd[1], bbdd[2])
+                    newVaciaTablas(conn)
                     input("\n¡Información borrada con éxito! Pulsa enter para volver al menú...")
             elif option == "4":
                 continuar = input("\nRecuerda, antes de realizar este paso has de lanzar [3]. ¿Desea continuar? (S/n): ")
                 if continuar in ["S", "s", ""]:
-                    insertaDatasets(bbdd[0], bbdd[1], bbdd[2])
+                    insertaDatasets(conn)
                     input("\n¡Información insertada con éxito! Pulsa enter para volver al menú...")
                     
             elif option == "5":
-                informacionBBDD(bbdd[0], bbdd[1], bbdd[2])
+                informacionBBDD(conn)
             else:
                 input("\nOpción no válida...")
     

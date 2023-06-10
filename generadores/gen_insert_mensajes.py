@@ -15,9 +15,7 @@ K_DIV_INSERT = 2000
 K_N_MENSAJES = 10
 K_N_CHATS = 200
 
-def run_query(query, db_user, db_name, db_pass):
-    
-    conn = mysql.connector.connect(host = DB_HOST, user = db_user, passwd = db_pass, database = db_name)
+def run_query(query, conn):
     cursor = conn.cursor()
     cursor.execute("SET NAMES utf8;")
     cursor.execute("SET CHARACTER SET utf8;")
@@ -32,13 +30,13 @@ def run_query(query, db_user, db_name, db_pass):
     
     return salida 
     
-def main(db_user, db_name, db_pass):
+def main(conn):
     fake = Faker('es_ES')
 
     if path.exists(K_SALIDA):
         remove(K_SALIDA)
         
-    chats = run_query("SELECT id, AES_DECRYPT(nif_usuario_1, SHA2('abcdefghijklmnopqrstuvwx', 512)), AES_DECRYPT(nif_usuario_2, SHA2('abcdefghijklmnopqrstuvwx', 512)), fecha_inicio, fecha_fin FROM chat", db_user, db_name, db_pass)
+    chats = run_query("SELECT id, AES_DECRYPT(nif_usuario_1, SHA2('abcdefghijklmnopqrstuvwx', 512)), AES_DECRYPT(nif_usuario_2, SHA2('abcdefghijklmnopqrstuvwx', 512)), fecha_inicio, fecha_fin FROM chat", conn)
 
     f = open(K_SALIDA, "x", encoding="utf-8")
     f = open(K_SALIDA, "a", encoding="utf-8")

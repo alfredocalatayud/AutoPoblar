@@ -15,14 +15,12 @@ TITULO = """888b. w                                w    8                     db
 8   b 8 8.dP' 8P Y8  YbdP  8.dP' 8P Y8 8 8  8 8' .8    8  8     dPwwYb  8b d8  8   8' .8 8wwP' 8' .8 8  8 8 8  8 8P   
 888P' 8 `Y88P 8   8   YP   `Y88P 8   8 8 `Y88 `Y8P'    `Y88    dP    Yb `Y8P8  Y8P `Y8P' 8     `Y8P' 88P' 8 `Y88 8\n"""
 
-def informacionTabla(db_user, db_name, db_pass):
-    conn = mysql.connector.connect(host=DB_HOST, user=db_user, passwd=db_pass, database=db_name)
-
+def informacionTabla(conn):
     cursor = conn.cursor()
     cursor.execute("SELECT TABLE_NAME, TABLE_ROWS, DATA_LENGTH, DATA_FREE, CREATE_TIME, UPDATE_TIME \
                     FROM information_schema.tables \
                     WHERE table_schema = '{}' \
-                    AND TABLE_type = 'BASE TABLE';".format(db_name))
+                    AND TABLE_type = 'BASE TABLE';".format(conn.database))
     
     resultado = cursor.fetchall()
 
@@ -39,14 +37,12 @@ def informacionTabla(db_user, db_name, db_pass):
 
     input("\nPulsa enter para volver al menú...")
 
-def informacionVistas(db_user, db_name, db_pass):
-    conn = mysql.connector.connect(host=DB_HOST, user=db_user, passwd=db_pass, database=db_name)
-
+def informacionVistas(conn):
     cursor = conn.cursor()
     cursor.execute("SELECT TABLE_NAME \
                     FROM information_schema.tables \
                     WHERE table_schema = '{}' \
-                    and table_type = 'VIEW';".format(db_name))
+                    and table_type = 'VIEW';".format(conn.database))
     
     resultado = cursor.fetchall()
 
@@ -63,13 +59,11 @@ def informacionVistas(db_user, db_name, db_pass):
 
     input("\nPulsa enter para volver al menú...")
 
-def informacionTriggers(db_user, db_name, db_pass):
-    conn = mysql.connector.connect(host=DB_HOST, user=db_user, passwd=db_pass, database=db_name)
-
+def informacionTriggers(conn):
     cursor = conn.cursor()
     cursor.execute("SELECT TRIGGER_name, EVENT_manipulation, event_object_table, ACTION_timing, created \
                     FROM information_schema.triggers \
-                    WHERE trigger_schema = '{}';".format(db_name))
+                    WHERE trigger_schema = '{}';".format(conn.database))
     
     resultado = cursor.fetchall()
 
@@ -86,14 +80,12 @@ def informacionTriggers(db_user, db_name, db_pass):
 
     input("\nPulsa enter para volver al menú...")
 
-def informacionFuncion(db_user, db_name, db_pass):
-    conn = mysql.connector.connect(host=DB_HOST, user=db_user, passwd=db_pass, database=db_name)
-
+def informacionFuncion(conn):
     cursor = conn.cursor()
     cursor.execute("SELECT SPECIFIC_NAME, CREATED, LAST_altered \
                     FROM information_schema.routines \
                     WHERE ROUTINE_schema = '{}' \
-                    AND ROUTINE_type = 'FUNCTION'".format(db_name))
+                    AND ROUTINE_type = 'FUNCTION'".format(conn.database))
     
     resultado = cursor.fetchall()
 
@@ -110,14 +102,12 @@ def informacionFuncion(db_user, db_name, db_pass):
 
     input("\nPulsa enter para volver al menú...")
 
-def informacionProcesos(db_user, db_name, db_pass):
-    conn = mysql.connector.connect(host=DB_HOST, user=db_user, passwd=db_pass, database=db_name)
-
+def informacionProcesos(conn):
     cursor = conn.cursor()
     cursor.execute("SELECT SPECIFIC_NAME, CREATED, LAST_altered \
                     FROM information_schema.routines \
                     WHERE ROUTINE_schema = '{}' \
-                    AND ROUTINE_type = 'PROCEDURE'".format(db_name))
+                    AND ROUTINE_type = 'PROCEDURE'".format(conn.database))
     
     resultado = cursor.fetchall()
 
@@ -134,13 +124,11 @@ def informacionProcesos(db_user, db_name, db_pass):
 
     input("\nPulsa enter para volver al menú...")
 
-def informacionEventos(db_user, db_name, db_pass):
-    conn = mysql.connector.connect(host=DB_HOST, user=db_user, passwd=db_pass, database=db_name)
-
+def informacionEventos(conn):    
     cursor = conn.cursor()
     cursor.execute("SELECT event_name, created, last_altered \
                     FROM information_schema.events \
-                    WHERE event_schema = '{}';".format(db_name))
+                    WHERE event_schema = '{}';".format(conn.database))
     
     resultado = cursor.fetchall()
 

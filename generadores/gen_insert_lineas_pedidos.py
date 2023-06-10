@@ -19,9 +19,7 @@ K_N_PEDIDOS = 2000
 K_N_PRODUCTOS = 30
 K_ESTADOS = ["Cesta", "Pendiente", "Confirmado", "Enviado", "Entregado", "Cancelado", "Devuelto", "Rechazado", "En devolucion"]
 
-def run_query(query, db_user, db_name, db_pass):
-    
-    conn = mysql.connector.connect(host = DB_HOST, user = db_user, passwd = db_pass, database = db_name)
+def run_query(query, conn):
     cursor = conn.cursor()
     cursor.execute("SET NAMES utf8;")
     cursor.execute("SET CHARACTER SET utf8;")
@@ -43,12 +41,12 @@ def valor_cursor(cursor, clave):
 
 fake = Faker('es_ES')
 
-def main(db_user='gi_tierra_alicante', db_name='gi_tierra_alicante2', db_pass = 'tierra'): 
+def main(conn): 
     if path.exists(K_SALIDA):
         remove(K_SALIDA)
 
-    productos = run_query("SELECT id, precio, iva, AES_DECRYPT(nif_vendedor, SHA2('abcdefghijklmnopqrstuvwx', 512)) FROM producto;", db_user, db_name, db_pass)
-    pedidos = run_query("SELECT AES_DECRYPT(nif_cliente, SHA2('abcdefghijklmnopqrstuvwx', 512)), date_format(fecha_pedido, '%Y/%m/%d') from pedido;", db_user, db_name, db_pass)
+    productos = run_query("SELECT id, precio, iva, AES_DECRYPT(nif_vendedor, SHA2('abcdefghijklmnopqrstuvwx', 512)) FROM producto;", conn)
+    pedidos = run_query("SELECT AES_DECRYPT(nif_cliente, SHA2('abcdefghijklmnopqrstuvwx', 512)), date_format(fecha_pedido, '%Y/%m/%d') from pedido;", conn)
 
     K_N_PEDIDOS = len(pedidos)
 

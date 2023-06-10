@@ -16,9 +16,7 @@ K_DIV_INSERT = 2000
 K_N_PEDIDOS = 20
 K_N_CHATS = 200
 
-def run_query(query, db_user, db_name, db_pass):
-    
-    conn = mysql.connector.connect(host = DB_HOST, user = db_user, passwd = db_pass, database = db_name)
+def run_query(query, conn):
     cursor = conn.cursor()
     cursor.execute("SET NAMES utf8;")
     cursor.execute("SET CHARACTER SET utf8;")
@@ -38,14 +36,14 @@ def valor_cursor(cursor, clave):
             return dato[1]
         
 
-def main(db_user="gi_acs128", db_name="gi_acs128", db_pass="Caramelos1998"):
+def main(conn):
     fake = Faker('es_ES')
 
     if path.exists(K_SALIDA):
         remove(K_SALIDA)
 
-    nif_clientes = run_query("SELECT AES_DECRYPT(nif, SHA2('abcdefghijklmnopqrstuvwx', 512)) FROM cliente;", db_user, db_name, db_pass)
-    nif_transportes = run_query("SELECT nif FROM transporte;", db_user, db_name, db_pass)
+    nif_clientes = run_query("SELECT AES_DECRYPT(nif, SHA2('abcdefghijklmnopqrstuvwx', 512)) FROM cliente;", conn)
+    nif_transportes = run_query("SELECT nif FROM transporte;", conn)
 
     f = open(K_SALIDA, "x", encoding="utf-8")
     f = open(K_SALIDA, "a", encoding="utf-8")
@@ -70,7 +68,7 @@ def main(db_user="gi_acs128", db_name="gi_acs128", db_pass="Caramelos1998"):
 
         try:
             num_tarjeta_bancarias = run_query("SELECT AES_DECRYPT(nif_cliente, SHA2('abcdefghijklmnopqrstuvwx', 512)) as nif_cliente, AES_DECRYPT(numero, SHA2('abcdefghijklmnopqrstuvwx', 512)) \
-                                               FROM tarjeta_bancaria where nif_cliente = AES_ENCRYPT('" + nifcli + "', SHA2('abcdefghijklmnopqrstuvwx', 512));", db_user, db_name, db_pass)
+                                               FROM tarjeta_bancaria where nif_cliente = AES_ENCRYPT('" + nifcli + "', SHA2('abcdefghijklmnopqrstuvwx', 512));", conn)
         except Exception as e:
             print("Ocurrió el error: {}".format(e))
             traceback.print_exc()
@@ -79,7 +77,7 @@ def main(db_user="gi_acs128", db_name="gi_acs128", db_pass="Caramelos1998"):
         num_tarjeta_bancaria = valor_cursor(num_tarjeta_bancarias, nifcli)
 
         try:
-            id_dir_envios = run_query("SELECT AES_DECRYPT(nif_usuario, SHA2('abcdefghijklmnopqrstuvwx', 512)) as nif_usuario, id FROM direccion where nif_usuario = AES_ENCRYPT('" + nifcli + "', SHA2('abcdefghijklmnopqrstuvwx', 512));", db_user, db_name, db_pass)
+            id_dir_envios = run_query("SELECT AES_DECRYPT(nif_usuario, SHA2('abcdefghijklmnopqrstuvwx', 512)) as nif_usuario, id FROM direccion where nif_usuario = AES_ENCRYPT('" + nifcli + "', SHA2('abcdefghijklmnopqrstuvwx', 512));", conn)
         except Exception as e:
             print("Ocurrió el error: {}".format(e))
             traceback.print_exc()
