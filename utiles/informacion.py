@@ -46,7 +46,7 @@ def informacionVistas(conn):
     
     resultado = cursor.fetchall()
 
-    os.system('clear')
+    os.system(LIMPIAR)
     print(TITULO)
 
     print("+----------------------------+")
@@ -67,7 +67,7 @@ def informacionTriggers(conn):
     
     resultado = cursor.fetchall()
 
-    os.system('clear')
+    os.system(LIMPIAR)
     print(TITULO)
 
     print("+----------------------------------+")
@@ -89,7 +89,7 @@ def informacionFuncion(conn):
     
     resultado = cursor.fetchall()
 
-    os.system('clear')
+    os.system(LIMPIAR)
     print(TITULO)
 
     print("+-------------------------------+")
@@ -111,7 +111,7 @@ def informacionProcesos(conn):
     
     resultado = cursor.fetchall()
 
-    os.system('clear')
+    os.system(LIMPIAR)
     print(TITULO)
 
     print("+------------------------------+")
@@ -132,7 +132,7 @@ def informacionEventos(conn):
     
     resultado = cursor.fetchall()
 
-    os.system('clear')
+    os.system(LIMPIAR)
     print(TITULO)
 
     print("+------------------------------+")

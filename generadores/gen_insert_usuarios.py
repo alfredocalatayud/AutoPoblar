@@ -3,8 +3,6 @@ sys.path.append('../AutoPoblar')
 
 import mysql.connector
 
-#from utiles import encriptar
-
 from datetime import date
 from faker import Faker
 from progress.bar import Bar

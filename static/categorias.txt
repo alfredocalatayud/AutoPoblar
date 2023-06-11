@@ -14,13 +14,13 @@ Mariscos frescos
 Embutidos y salchichas
 Quesos frescos
 Quesos curados
-Yogures
+Yogurt
 Leche fresca
 Leches vegetales
 Nata y cremas para cocinar
 Huevos
 Mantequilla
-Margarina
+Manteca
 Aceites vegetales
 Vinagres
 Especias y condimentos
@@ -33,7 +33,7 @@ Chocolate para untar
 Frutos secos
 Semillas y granos
 Harinas
-Levaduras
+Masa fermentada
 Azúcares y edulcorantes
 Sal
 Pan rallado
@@ -84,7 +84,7 @@ Sándwiches preparados
 Salsas para dips
 Barritas energéticas
 Batidos de proteínas
-Suplementos alimenticios.
+Suplementos 
 Alimentos orgánicos
 Alimentos sin gluten
 Alimentos sin lactosa
@@ -104,9 +104,9 @@ Palitos de queso
 Palomitas saladas
 Pretzels
 Churros salados
-Chocolatinas
+Bombon de chocolate
 Galletas dulces
-Gominolas
+Chicles
 Piruletas
 Caramelos de menta
 Chicles de frutas

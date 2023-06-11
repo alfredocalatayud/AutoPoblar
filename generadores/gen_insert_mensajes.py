@@ -24,10 +24,7 @@ def run_query(query, conn):
 
     salida = cursor.fetchall()
 
-    cursor.close()
-    conn.close()
-
-    
+    cursor.close()    
     return salida 
     
 def main(conn):

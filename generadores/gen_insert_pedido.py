@@ -21,14 +21,15 @@ def run_query(query, conn):
     cursor.execute("SET NAMES utf8;")
     cursor.execute("SET CHARACTER SET utf8;")
     cursor.execute("SET character_set_connection=utf8;")
+    cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
     cursor.execute(query)
 
     salida = cursor.fetchall()
 
     cursor.close()
-    conn.close()
 
     return salida 
+
 
 def valor_cursor(cursor, clave):
     for dato in cursor:
@@ -36,7 +37,8 @@ def valor_cursor(cursor, clave):
             return dato[1]
         
 
-def main(conn):
+def insertar(conn):
+    cursor = conn.cursor()
     fake = Faker('es_ES')
 
     if path.exists(K_SALIDA):
@@ -116,6 +118,3 @@ def main(conn):
 
     bar.finish()		
     f.close();	
-
-if __name__ == "__main__":
-    main()

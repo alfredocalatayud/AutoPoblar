@@ -52,8 +52,6 @@ def run_query(querys, conn):
     cursor.execute("SET FOREIGN_KEY_CHECKS=1;")
     cursor.execute("COMMIT;")
     bar.finish()
-    cursor.close()
-    conn.close()
 
 def vaciatablas(conn):
     setter1 = "SET FOREIGN_KEY_CHECKS=0;"
@@ -72,7 +70,7 @@ def vaciatablas(conn):
     print("| BORRADO DE TABLAS FINALIZADO |")
     print("+------------------------------+")
 
-def newVaciaTablas(conn):
+def newVaciaTablas(conn = mysql.connector.connect()):
     cursor = conn.cursor()
 
     with open(K_DELETE) as file:
@@ -83,24 +81,23 @@ def newVaciaTablas(conn):
     print("+--------------------------+")
 
     bar = Bar('     Procesando', max=len(deletes))
+    cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
 
     for delete in deletes:
-        t_lote = 10000
-        offset = 0
+        t_lote = 50000
 
         while True:
-            cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
+            
             cursor.execute(delete.format(conn.database, t_lote))
-            cursor.execute("SET FOREIGN_KEY_CHECKS=1;")
-            cursor.execute("commit;")
+            filas_modificadas = cursor.rowcount
 
-            print(cursor.rowcount)
-            if cursor.rowcount < t_lote:
+            if filas_modificadas == 0:
                 break
-                
-            offset += t_lote   
         bar.next()
     bar.finish()
+
+    cursor.execute("SET FOREIGN_KEY_CHECKS=1;")
+    cursor.execute("commit;")
 
     print("+------------------------------+")
     print("| BORRADO DE TABLAS FINALIZADO |")
@@ -133,7 +130,8 @@ def ejectutaFichero(conn, fichero, mensaje):
     with open(fichero, 'r') as myfile:
         cursor = conn.cursor()
         data = myfile.read()
-        cursor.execute(data)
+        cursor.execute(data, multi=True)
+    cursor.execute("commit;")
 
 
 def datasetsPlusInserta(conn):
@@ -141,13 +139,13 @@ def datasetsPlusInserta(conn):
     print("|      GENERANDO DATASETS      |")
     print("+------------------------------+")
 
-    generador_dni.main()
-    gen_insert_usuarios.main()
-    gen_insert_categorias.main()
-    gen_insert_clientes.main()
-    gen_insert_direcciones.main()
-    gen_insert_empleados.main()
-    gen_insert_vendedores.main()
+    # generador_dni.main()
+    # gen_insert_usuarios.main()
+    # gen_insert_categorias.main()
+    # gen_insert_clientes.main()
+    # gen_insert_direcciones.main()
+    # gen_insert_empleados.main()
+    # gen_insert_vendedores.main()
     gen_insert_productos.main()
     gen_insert_tarjetas.main()
     gen_insert_lista.main()
@@ -158,7 +156,7 @@ def datasetsPlusInserta(conn):
     
     insertar(conn, INSERTS1)
 
-    gen_insert_pedido.main(conn)
+    gen_insert_pedido.insertar(conn)
     insertar(conn, ["pedidos.sql"])
 
     gen_insert_lineas_pedidos.main(conn)
@@ -191,8 +189,8 @@ def numTablas(conn):
 
 def pruebaConexion(db_user, db_name, db_pass):
     try:
-        mysql.connector.connect(host=DB_HOST, user=db_user, passwd=db_pass, database=db_name)
-        return True
+        sesion = mysql.connector.connect(host=DB_HOST, user=db_user, passwd=db_pass, database=db_name)
+        return sesion
     except mysql.connector.errors.InterfaceError  as interno:
         print("\n")
         if interno.errno == 1044:
@@ -230,28 +228,28 @@ def generacionCompleta(conn):
     print("|    INICIANDO CREACIÓN    |")
     print("+--------------------------+")
 
-    ejectutaFichero(conn, "./static/drop_triggers.sql", "¡Borrando triggers!")
-    ejectutaFichero(conn, "./static/drop_functions.sql", "¡Borrando funciones!")
-    ejectutaFichero(conn, "./static/drop_procedures.sql", "¡Borrando procesos!")
-    ejectutaFichero(conn, "./static/drop_events.sql", "¡Borrando eventos!")
-    ejectutaFichero(conn, "./static/drop_views.sql", "¡Borrando vistas!")
-    ejectutaFichero(conn, "./static/drop_tables.sql", "¡Borrando tablas!")
-    try:
-        ejectutaFichero(conn, "./static/drop_indices.sql", "¡Borrando indices!")   
-    except:
-        print("No es necesario borrar índices")
-        pass
+    # ejectutaFichero(conn, "./static/drop_triggers.sql", "¡Borrando triggers!")
+    # ejectutaFichero(conn, "./static/drop_functions.sql", "¡Borrando funciones!")
+    # ejectutaFichero(conn, "./static/drop_procedures.sql", "¡Borrando procesos!")
+    # ejectutaFichero(conn, "./static/drop_events.sql", "¡Borrando eventos!")
+    # ejectutaFichero(conn, "./static/drop_views.sql", "¡Borrando vistas!")
+    # ejectutaFichero(conn, "./static/drop_tables.sql", "¡Borrando tablas!")
+    # try:
+    #     ejectutaFichero(conn, "./static/drop_indices.sql", "¡Borrando indices!")   
+    # except:
+    #     print("No es necesario borrar índices")
+    #     pass
+    
+    # ejectutaFichero(conn, "./static/create_tables.sql", "¡Creando tablas!")
+    # time.sleep(15)
+    # tablas = numTablas(conn)
 
-    ejectutaFichero(conn, "./static/create_tables.sql", "¡Creando tablas!")
-    time.sleep(15)
-    tablas = numTablas(conn)
+    # while(tablas < 18):
+    #     ejectutaFichero(conn, "./static/create_tables.sql", "Creación de tablas en progreso...")
+    #     time.sleep(15)
+    #     tablas = numTablas(conn)
 
-    while(tablas < 18):
-        ejectutaFichero(conn, "./static/create_tables.sql", "Creación de tablas en progreso...")
-        time.sleep(15)
-        tablas = numTablas(conn)
-
-    ejectutaFichero(conn, "./static/create_triggers1.sql", "¡Primeros triggers creados!")   
+    # ejectutaFichero(conn, "./static/create_triggers1.sql", "¡Primeros triggers creados!")   
 
     datasetsPlusInserta(conn)
     #insertaTodo(db_user, db_name, db_pass)
@@ -336,6 +334,9 @@ def inicioSesion():
         sesion = pruebaConexion(db_user, db_name, db_pass)
 
         if sesion:
+            os.environ["db_user"] = db_user
+            os.environ["db_name"] = db_name
+            os.environ["db_pass"] = db_pass
             input("\n¡Sesión iniciada correctamente! Pulsa enter para volver al menú...")
             return sesion
 

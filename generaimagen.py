@@ -103,3 +103,5 @@ if __name__ == '__main__':
     print("\ndownload started........\n")
     download(required_urls)
     print('\n{} images downloaded\ntime took {:.2f}'.format(len(required_urls), time.time()-start))
+
+

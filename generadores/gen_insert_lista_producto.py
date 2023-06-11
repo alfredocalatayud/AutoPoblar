@@ -23,7 +23,6 @@ def run_query(query, conn):
     salida = cursor.fetchall()
 
     cursor.close()
-    conn.close()
 
     return salida 
 
