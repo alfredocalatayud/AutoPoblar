@@ -1,3 +1,4 @@
+import bcrypt
 import sys
 import platform
 from tabulate import tabulate
@@ -144,3 +145,107 @@ def informacionEventos(conn):
     print("\nNúmero de eventos: {}".format(len(resultado)))
 
     input("\nPulsa enter para volver al menú...")
+
+def getVendedor(conn):
+    cursor = conn.cursor()
+    cursor.execute("SELECT convert(aes_decrypt(usua.mail, SHA2('abcdefghijklmnopqrstuvwx', 512)) using utf8) AS email, convert(aes_decrypt(usua.nif, SHA2('abcdefghijklmnopqrstuvwx', 512)) using utf8) AS nif, '1234' AS pwd \
+                    FROM usuario usua, vendedor clie \
+                    WHERE usua.nif = clie.nif \
+                    ORDER BY RAND() LIMIT 3;")
+    
+    resultado = cursor.fetchall()
+
+    pwd = '1234'
+    salt = bcrypt.gensalt()
+    contrasenya = bcrypt.hashpw(pwd.encode(), salt)
+
+    os.system(LIMPIAR)
+    print(TITULO)
+    print("\nCargando vendedores...")
+    for pers in resultado:
+        query = "UPDATE usuario \
+                 SET contrasenya = \"{}\" \
+                 WHERE aes_decrypt(nif, SHA2('abcdefghijklmnopqrstuvwx', 512)) = '{}';".format(contrasenya.decode('utf-8'), pers[1])
+
+        cursor.execute(query)
+        cursor.execute("commit")
+
+    os.system(LIMPIAR)
+    print(TITULO)
+    print("+---------------------------+")
+    print("|  Información vendedores   |")
+    print("+---------------------------+\n")
+
+    print(tabulate(resultado, headers=["Email", "NIF", "Contraseña"], tablefmt='psql'))
+
+    input("\nPulsa enter para volver al menú...")
+
+def getCliente(conn):
+    cursor = conn.cursor()
+    cursor.execute("SELECT convert(aes_decrypt(usua.mail, SHA2('abcdefghijklmnopqrstuvwx', 512)) using utf8) AS email, convert(aes_decrypt(usua.nif, SHA2('abcdefghijklmnopqrstuvwx', 512)) using utf8) AS nif, '1234' AS pwd \
+                    FROM usuario usua, cliente clie \
+                    WHERE usua.nif = clie.nif \
+                    ORDER BY RAND() LIMIT 3;")
+    
+    resultado = cursor.fetchall()
+
+    pwd = '1234'
+    salt = bcrypt.gensalt()
+    contrasenya = bcrypt.hashpw(pwd.encode(), salt)
+
+    os.system(LIMPIAR)
+    print(TITULO)
+    print("\nCargando clientes...")
+    for pers in resultado:
+        query = "UPDATE usuario \
+                 SET contrasenya = \"{}\" \
+                 WHERE aes_decrypt(nif, SHA2('abcdefghijklmnopqrstuvwx', 512)) = '{}';".format(contrasenya.decode('utf-8'), pers[1])
+
+        cursor.execute(query)
+        cursor.execute("commit")
+
+    os.system(LIMPIAR)
+    print(TITULO)
+    print("+-------------------------+")
+    print("|  Información clientes   |")
+    print("+-------------------------+\n")
+
+    print(tabulate(resultado, headers=["Email", "NIF", "Contraseña"], tablefmt='psql'))
+
+    input("\nPulsa enter para volver al menú...")
+
+def getEmpleado(conn):
+    cursor = conn.cursor()
+    cursor.execute("SELECT convert(aes_decrypt(usua.mail, SHA2('abcdefghijklmnopqrstuvwx', 512)) using utf8) AS email, convert(aes_decrypt(usua.nif, SHA2('abcdefghijklmnopqrstuvwx', 512)) using utf8) AS nif, '1234' AS pwd \
+                    FROM usuario usua, empleado clie \
+                    WHERE usua.nif = clie.nif \
+                    ORDER BY RAND() LIMIT 3;")
+    
+    resultado = cursor.fetchall()
+
+    pwd = '1234'
+    salt = bcrypt.gensalt()
+    contrasenya = bcrypt.hashpw(pwd.encode(), salt)
+
+    os.system(LIMPIAR)
+    print(TITULO)
+    print("\nCargando empleados...")
+    for pers in resultado:
+        query = "UPDATE usuario \
+                 SET contrasenya = \"{}\" \
+                 WHERE aes_decrypt(nif, SHA2('abcdefghijklmnopqrstuvwx', 512)) = '{}';".format(contrasenya.decode('utf-8'), pers[1])
+
+        cursor.execute(query)
+        cursor.execute("commit")
+
+    os.system(LIMPIAR)
+    print(TITULO)
+    print("+--------------------------+")
+    print("|  Información empleados   |")
+    print("+--------------------------+\n")
+
+    print(tabulate(resultado, headers=["Email", "NIF", "Contraseña"], tablefmt='psql'))
+
+    input("\nPulsa enter para volver al menú...")
+
+    

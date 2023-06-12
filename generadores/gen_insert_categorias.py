@@ -3,7 +3,7 @@ from progress.bar import Bar
 from os import remove, path
 import requests
 
-from utiles import imagenes as img
+from utiles import imagenurl as url
 
 K_SALIDA = './SQL/categorias.sql'
 K_NIFS = "./static/categorias.txt"
@@ -12,6 +12,7 @@ K_VALUES = "({}, '{}', {}, '{}')"
 K_DIV_INSERT = 190
 
 def main():
+    driver = url.init_driver()
     fake = Faker('es_ES')
 
     if path.exists(K_SALIDA):
@@ -38,7 +39,7 @@ def main():
     while i < 100:
         bar.next()
 
-        f.write(K_VALUES.format(str(j), nifs[i].replace("\n", ""), "NULL", img.url_imagen(nifs[i].replace("\n", ""))))
+        f.write(K_VALUES.format(str(j), nifs[i].replace("\n", ""), "NULL", url.get_images_from_google(driver, 0, 1, nifs[i].replace("\n", ""))))
 
         i+=1
         j+=1
@@ -55,7 +56,7 @@ def main():
         bar.next()
 
         # f.write('(' + str(j) + ', \'' + nifs[i].replace("\n", "") + '\', ' + str(k) + ', \'' + 'Todo, aquí irá una imagen' + '\')')
-        f.write(K_VALUES.format(str(j), nifs[i].replace("\n", ""), str(k), img.url_imagen(nifs[i].replace("\n", ""))))
+        f.write(K_VALUES.format(str(j), nifs[i].replace("\n", ""), str(k), url.get_images_from_google(driver, 0, 1, nifs[i].replace("\n", ""))))
 
         if x % 6 == 0 and x != 0:
             k+=1
@@ -72,5 +73,6 @@ def main():
         elif i < len(nifs):
             f.write(',\n')
 
-    bar.finish()		
+    bar.finish()	
+    driver.close()
     f.close();	

@@ -5,6 +5,7 @@ import random
 import requests
 
 from utiles import imagenes as img
+from utiles import imagenurl as url
 
 K_SALIDA = './SQL/productos.sql'
 K_CATEGORIAS = "./static/productos.txt"
@@ -12,8 +13,8 @@ K_NIFS = "./static/nifs.txt"
 K_LETRAS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 K_INSERT = 'insert into producto (id, nombre, descripcion, id_categoria, nif_vendedor, precio, costes_envio, iva, stock, plazo_devolucion, dimensiones, peso, url_imagen, restric_edad, activo, relevancia) values '
 K_VALUES = "({}, '{}', '{}', {}, AES_ENCRYPT('{}', SHA2('abcdefghijklmnopqrstuvwx', 512)), {}, {}, {}, {}, {}, '{}', {}, '{}', {}, {}, {})"
-K_DIV_INSERT = 190
-K_N_INSERT = 190
+K_DIV_INSERT = 200
+K_N_INSERT = 200
 
 # def get_imagen(category):
 #     # make a request to the Unsplash API to get a random image
@@ -29,6 +30,7 @@ K_N_INSERT = 190
 # 	return(salida)
 
 def main():
+	driver = url.init_driver()
 	fake = Faker('es_ES')
 
 	ivas = [0.05, 0.10, 0.21]
@@ -67,7 +69,7 @@ def main():
 		plazo_devolucion = str(random.randint(30,90))
 		dimensiones = str(random.randint(1,100)) + 'x' + str(random.randint(1,100)) + 'x' + str(random.randint(1,100))
 		peso = str(round(random.uniform(1.00, 200.00), 2))
-		url_imagen = img.url_imagen(nombre)
+		url_imagen = url.get_images_from_google(driver, 0, 1, nombre)
 		restric_edad = str(restricciones[random.randint(0,2)])
 		activo = str(random.randint(0,1))
 		relevancia = str(random.randint(0,100))
@@ -87,6 +89,7 @@ def main():
 		
 	bar.finish()		
 	f.close();	
+	driver.close()
 
 
 if __name__ == "__main__":

@@ -35,9 +35,9 @@ TITULO = """888b. w                                w    8                     db
 
 def run_query(querys, conn):
     cursor = conn.cursor()
-    cursor.execute("SET NAMES utf8;")
-    cursor.execute("SET CHARACTER SET utf8;")
-    cursor.execute("SET character_set_connection=utf8;")
+    # cursor.execute("SET NAMES utf8;")
+    # cursor.execute("SET     CHARACTER SET utf8;")
+    cursor.execute("    ")
     cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
 
     bar = Bar('     Procesando', max=len(querys))
@@ -46,7 +46,7 @@ def run_query(querys, conn):
         #print(query)
         bar.next()
         if query not in ("", ";"):
-            cursor.execute(query)
+            cursor.execute(query + ");")
             cursor.execute("COMMIT;")
 
     cursor.execute("SET FOREIGN_KEY_CHECKS=1;")
@@ -113,7 +113,8 @@ def insertar(conn, inserts):
         sql_file = "./SQL/{}".format(tabla)
 
         with open(sql_file, encoding="latin-1") as file:
-            sql_commands = file.read().split(';')[:-1]
+            # sql_commands = file.read().split(';')[:-1]
+            sql_commands = file.read().split(');')[:-1]
 
         run_query(sql_commands, conn)
 
@@ -129,9 +130,11 @@ def ejectutaFichero(conn, fichero, mensaje):
     print(mensaje)
     with open(fichero, 'r') as myfile:
         cursor = conn.cursor()
+        cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
         data = myfile.read()
         cursor.execute(data, multi=True)
-    cursor.execute("commit;")
+        time.sleep(2)
+        cursor.execute("SET FOREIGN_KEY_CHECKS=1;")
 
 
 def datasetsPlusInserta(conn):
@@ -140,12 +143,12 @@ def datasetsPlusInserta(conn):
     print("+------------------------------+")
 
     # generador_dni.main()
-    # gen_insert_usuarios.main()
-    # gen_insert_categorias.main()
-    # gen_insert_clientes.main()
-    # gen_insert_direcciones.main()
-    # gen_insert_empleados.main()
-    # gen_insert_vendedores.main()
+    gen_insert_usuarios.main()
+    gen_insert_categorias.main()
+    gen_insert_clientes.main()
+    gen_insert_direcciones.main()
+    gen_insert_empleados.main()
+    gen_insert_vendedores.main()
     gen_insert_productos.main()
     gen_insert_tarjetas.main()
     gen_insert_lista.main()
@@ -300,6 +303,9 @@ def informacionBBDD(conn):
         print(" [3] Funciones.")
         print(" [4] Procesos.")
         print(" [5] Eventos.")
+        print(" [6] Vendedor.")
+        print(" [7] Cliente.")
+        print(" [8] Empleado.")
         print(" [X] Salir.")
 
         option = input("\nElige tu opción: ")
@@ -319,6 +325,12 @@ def informacionBBDD(conn):
             info.informacionProcesos(conn)
         elif option == "5":
             info.informacionEventos(conn)
+        elif option == "6":
+            info.getVendedor(conn)
+        elif option == "7":
+            info.getCliente(conn)
+        elif option == "8":
+            info.getEmpleado(conn)
         else:
             input("\nOpción no válida...")
 

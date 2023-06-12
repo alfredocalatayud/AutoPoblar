@@ -51,7 +51,7 @@ Chorizo de Teruel
 Salchichón de Vic
 Queso de cabra artesano
 Queso de oveja curado
-Membrillo de Callosa d'en Sarrià
+Membrillo de Callosa d en Sarrià
 Aceite de oliva virgen extra con trufa
 Miel de romero
 Mermelada de naranja
@@ -127,7 +127,7 @@ Cerveza artesanal de algarrobo
 Vino dulce de la Marina Alta
 Agua de azahar
 Crema de alcachofas de Benicarló
-Aceite de oliva virgen extra de la Vall d'Albaida
+Aceite de oliva virgen extra de la Vall dAlbaida
 Ensalada de escarola y granada de Elche
 Pimiento de padrón
 Chufa fresca
@@ -196,5 +196,5 @@ Granada mollar de Elche
 Melón piel de sapo
 Sandía de Albatera
 Uva de mesa embolsada
-Brócoli de Callosa d'en Sarrià
+Brócoli de Callosa d en Sarrià
 Alcachofa de Tudela

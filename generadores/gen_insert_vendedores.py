@@ -12,6 +12,8 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import requests
 
+from utiles import imagenurl as url
+
 K_SALIDA = './SQL/vendedores.sql'
 K_NIFS = "./static/nifs.txt"
 K_LETRAS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -34,6 +36,7 @@ def get_imagen(category):
 
 
 def main():
+	driver = url.init_driver()
 	fake = Faker('es_ES')
 
 	if path.exists(K_SALIDA):
@@ -66,7 +69,7 @@ def main():
 		documento_acreditativo_alta = fake.file_name(category='text', extension='pdf')
 		cuenta_bancaria = fake.iban()
 		verificado = str(random.randint(0,1))
-		logo = get_imagen("market")
+		logo = url.get_images_from_google(driver, 0, 1,razon_social)
 
 		f.write(K_VALUES.format(nif, razon_social, documento_acreditativo_alta, cuenta_bancaria, verificado, logo))
 		
@@ -85,3 +88,4 @@ def main():
 	f.write(';\n')
 	bar.finish()		
 	f.close();	
+	driver.close()
