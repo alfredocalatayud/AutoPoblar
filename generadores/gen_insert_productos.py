@@ -4,7 +4,6 @@ from os import remove, path
 import random
 import requests
 
-from utiles import imagenes as img
 from utiles import imagenurl as url
 
 K_SALIDA = './SQL/productos.sql'

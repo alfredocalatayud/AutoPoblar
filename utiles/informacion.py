@@ -165,7 +165,7 @@ def getVendedor(conn):
     for pers in resultado:
         query = "UPDATE usuario \
                  SET contrasenya = \"{}\" \
-                 WHERE aes_decrypt(nif, SHA2('abcdefghijklmnopqrstuvwx', 512)) = '{}';".format(contrasenya.decode('utf-8'), pers[1])
+                 WHERE nif = aes_encrypt('{}', SHA2('abcdefghijklmnopqrstuvwx', 512));".format(contrasenya.decode('utf-8'), pers[1])
 
         cursor.execute(query)
         cursor.execute("commit")
@@ -199,7 +199,7 @@ def getCliente(conn):
     for pers in resultado:
         query = "UPDATE usuario \
                  SET contrasenya = \"{}\" \
-                 WHERE aes_decrypt(nif, SHA2('abcdefghijklmnopqrstuvwx', 512)) = '{}';".format(contrasenya.decode('utf-8'), pers[1])
+                 WHERE nif = aes_encrypt('{}', SHA2('abcdefghijklmnopqrstuvwx', 512));".format(contrasenya.decode('utf-8'), pers[1])
 
         cursor.execute(query)
         cursor.execute("commit")
@@ -233,7 +233,7 @@ def getEmpleado(conn):
     for pers in resultado:
         query = "UPDATE usuario \
                  SET contrasenya = \"{}\" \
-                 WHERE aes_decrypt(nif, SHA2('abcdefghijklmnopqrstuvwx', 512)) = '{}';".format(contrasenya.decode('utf-8'), pers[1])
+                 WHERE nif = aes_encrypt('{}', SHA2('abcdefghijklmnopqrstuvwx', 512));".format(contrasenya.decode('utf-8'), pers[1])
 
         cursor.execute(query)
         cursor.execute("commit")

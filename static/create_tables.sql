@@ -11,7 +11,7 @@ CREATE OR REPLACE TABLE usuario ( -- Revisado
         PRIMARY KEY (nif), 
     CONSTRAINT ak_usuario 
         UNIQUE (mail)
-);
+) default CHARSET=utf8;
 
 CREATE OR REPLACE TABLE vendedor ( -- Revisado
     nif VARBINARY(255) NOT NULL, -- Encriptado AES habilitado
@@ -28,7 +28,7 @@ CREATE OR REPLACE TABLE vendedor ( -- Revisado
         FOREIGN KEY (nif) 
         REFERENCES usuario(nif) 
         ON UPDATE CASCADE
-);
+) default CHARSET=utf8;
 
 CREATE or REPLACE TABLE cliente ( -- Revisado
     nif VARBINARY(255) NOT NULL, -- Encriptado AES habilitado
@@ -41,7 +41,7 @@ CREATE or REPLACE TABLE cliente ( -- Revisado
         FOREIGN KEY (nif) 
         REFERENCES usuario(nif) 
         ON UPDATE CASCADE
-);
+) default CHARSET=utf8;
 
 CREATE OR REPLACE TABLE categoria ( 
     id int UNSIGNED NOT NULL AUTO_INCREMENT, 
@@ -55,7 +55,7 @@ CREATE OR REPLACE TABLE categoria (
     CONSTRAINT fk_categoria_subcategoria 
         FOREIGN KEY (categoria_padre) 
         REFERENCES categoria(id) 
-);
+) default CHARSET=utf8;
 
 CREATE OR REPLACE TABLE direccion ( -- Revisado
     id int UNSIGNED NOT NULL AUTO_INCREMENT, 
@@ -72,7 +72,7 @@ CREATE OR REPLACE TABLE direccion ( -- Revisado
         FOREIGN KEY (nif_usuario) 
         REFERENCES usuario(nif) 
         ON UPDATE CASCADE
-);
+) default CHARSET=utf8;
 
 CREATE OR REPLACE TABLE empleado ( -- Revisado
     nif VARBINARY(255) NOT NULL, -- Encriptado AES habilitado
@@ -89,7 +89,7 @@ CREATE OR REPLACE TABLE empleado ( -- Revisado
         FOREIGN KEY (nif) 
         REFERENCES usuario(nif) 
         ON UPDATE CASCADE
-);
+) default CHARSET=utf8;
 
 CREATE OR REPLACE TABLE producto ( -- Revisado
     id int UNSIGNED NOT NULL AUTO_INCREMENT, 
@@ -117,7 +117,7 @@ CREATE OR REPLACE TABLE producto ( -- Revisado
     CONSTRAINT fk_producto_categoria 
         FOREIGN KEY (id_categoria) 
         REFERENCES categoria(id)
-);
+) default CHARSET=utf8;
 
 CREATE OR REPLACE TABLE lista ( -- Revisado
     id int UNSIGNED NOT NULL AUTO_INCREMENT, 
@@ -132,7 +132,7 @@ CREATE OR REPLACE TABLE lista ( -- Revisado
         FOREIGN KEY (nif_cliente) 
         REFERENCES cliente(nif)
         ON UPDATE CASCADE
-);
+) default CHARSET=utf8;
 
 CREATE OR REPLACE TABLE producto_lista ( -- Revisado
     id_producto int UNSIGNED NOT NULL, 
@@ -146,7 +146,7 @@ CREATE OR REPLACE TABLE producto_lista ( -- Revisado
         FOREIGN KEY (id_lista) 
         REFERENCES lista(id) 
         ON DELETE CASCADE
-);
+) default CHARSET=utf8;
 
 CREATE OR REPLACE TABLE valoracion ( -- Revisado
     id int UNSIGNED NOT NULL AUTO_INCREMENT, 
@@ -170,7 +170,7 @@ CREATE OR REPLACE TABLE valoracion ( -- Revisado
         REFERENCES producto(id), 
     CONSTRAINT ck_valoracion_calificacion 
         CHECK (calificacion BETWEEN 1 AND 5)
-);
+) default CHARSET=utf8;
 
 CREATE OR REPLACE TABLE tarjeta_bancaria ( -- Revisado
     numero VARBINARY(255) NOT NULL, -- No necesita encriptación al no asociarse a un usuario (si NIF encriptado) - Clave primaria
@@ -186,7 +186,7 @@ CREATE OR REPLACE TABLE tarjeta_bancaria ( -- Revisado
         ON UPDATE CASCADE, 
     CONSTRAINT ck_tarjeta_cvv 
         CHECK (LENGTH(cvv) = 3)
-);
+) default CHARSET=utf8;
 
 CREATE OR REPLACE TABLE transporte ( -- Revisado
 	nif varchar(9) NOT NULL,
@@ -195,7 +195,7 @@ CREATE OR REPLACE TABLE transporte ( -- Revisado
 		PRIMARY KEY (nif),
 	CONSTRAINT ak_transporte
 		UNIQUE KEY (nombre)
-);
+) default CHARSET=utf8;
 
 CREATE OR REPLACE TABLE pedido ( -- Revisado
     id int UNSIGNED NOT NULL AUTO_INCREMENT, 
@@ -226,7 +226,7 @@ CREATE OR REPLACE TABLE pedido ( -- Revisado
     CONSTRAINT fk_pedido_tarjeta 
         FOREIGN KEY (num_tarjeta_bancaria) 
         REFERENCES tarjeta_bancaria(numero)
-);
+) default CHARSET=utf8;
 
 CREATE OR REPLACE TABLE linea_pedido ( -- Revisado
     id int NOT NULL, 
@@ -248,7 +248,7 @@ CREATE OR REPLACE TABLE linea_pedido ( -- Revisado
     CONSTRAINT fk_linea_pedido_pedido 
         FOREIGN KEY (id_pedido) 
         REFERENCES pedido(id)
-);
+) default CHARSET=utf8;
 
 CREATE OR REPLACE TABLE chat ( -- Revisado
     id int UNSIGNED NOT NULL AUTO_INCREMENT, 
@@ -266,7 +266,7 @@ CREATE OR REPLACE TABLE chat ( -- Revisado
         FOREIGN KEY (nif_usuario_2) 
         REFERENCES usuario(nif) 
         ON UPDATE CASCADE
-);
+) default CHARSET=utf8;
 
 CREATE OR REPLACE TABLE mensaje ( -- Revisado
     id int UNSIGNED NOT NULL AUTO_INCREMENT, 
@@ -283,7 +283,7 @@ CREATE OR REPLACE TABLE mensaje ( -- Revisado
     CONSTRAINT fk_mensaje_chat
         FOREIGN KEY (id_chat) 
         REFERENCES chat(id)
-);
+) default CHARSET=utf8;
 
 
 CREATE OR REPLACE TABLE chat_archivado ( -- Revisado
@@ -302,7 +302,7 @@ CREATE OR REPLACE TABLE chat_archivado ( -- Revisado
         FOREIGN KEY (nif_usuario_2) 
         REFERENCES usuario(nif) 
         ON UPDATE CASCADE
-);
+) default CHARSET=utf8;
 
 CREATE OR REPLACE TABLE mensaje_archivado ( -- Revisado
     id int NOT NULL, 
@@ -319,7 +319,7 @@ CREATE OR REPLACE TABLE mensaje_archivado ( -- Revisado
     CONSTRAINT fk_mensaje_archivado_chat
         FOREIGN KEY (id_chat) 
         REFERENCES chat_archivado(id)
-);
+) default CHARSET=utf8;
 
 commit;
 

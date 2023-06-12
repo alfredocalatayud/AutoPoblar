@@ -37,7 +37,7 @@ def run_query(querys, conn):
     cursor = conn.cursor()
     # cursor.execute("SET NAMES utf8;")
     # cursor.execute("SET     CHARACTER SET utf8;")
-    cursor.execute("    ")
+    # cursor.execute("character set=latin1;")
     cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
 
     bar = Bar('     Procesando', max=len(querys))
@@ -127,14 +127,14 @@ def insertaFichero(conn, ficheros):
         ejectutaFichero(conn, "./SQL/{}".format(fichero), "Insertando {}".format(fichero))
 
 def ejectutaFichero(conn, fichero, mensaje):
+    conn.reconnect()
     print(mensaje)
+    cursor = conn.cursor()
     with open(fichero, 'r') as myfile:
-        cursor = conn.cursor()
-        cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
         data = myfile.read()
-        cursor.execute(data, multi=True)
-        time.sleep(2)
-        cursor.execute("SET FOREIGN_KEY_CHECKS=1;")
+        # cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
+    cursor.execute(data, multi=True)
+        # cursor.execute("SET FOREIGN_KEY_CHECKS=1;")
 
 
 def datasetsPlusInserta(conn):
@@ -142,7 +142,7 @@ def datasetsPlusInserta(conn):
     print("|      GENERANDO DATASETS      |")
     print("+------------------------------+")
 
-    # generador_dni.main()
+    generador_dni.main()
     gen_insert_usuarios.main()
     gen_insert_categorias.main()
     gen_insert_clientes.main()
@@ -179,6 +179,7 @@ def insertaTodo(conn):
     insertar(conn, INSERTS3)
 
 def numTablas(conn):
+    conn.reconnect()
     cursor = conn.cursor()
 
     cursor.execute("select count(*) as tables from information_schema.tables where table_type = 'BASE TABLE' and table_schema not in ('information_schema', 'sys', 'performance_schema', 'mysql') and TABLE_SCHEMA = '{}' group by table_schema order by table_schema;".format(conn.database))
@@ -231,29 +232,29 @@ def generacionCompleta(conn):
     print("|    INICIANDO CREACIÓN    |")
     print("+--------------------------+")
 
-    # ejectutaFichero(conn, "./static/drop_triggers.sql", "¡Borrando triggers!")
-    # ejectutaFichero(conn, "./static/drop_functions.sql", "¡Borrando funciones!")
-    # ejectutaFichero(conn, "./static/drop_procedures.sql", "¡Borrando procesos!")
-    # ejectutaFichero(conn, "./static/drop_events.sql", "¡Borrando eventos!")
-    # ejectutaFichero(conn, "./static/drop_views.sql", "¡Borrando vistas!")
-    # ejectutaFichero(conn, "./static/drop_tables.sql", "¡Borrando tablas!")
-    # try:
-    #     ejectutaFichero(conn, "./static/drop_indices.sql", "¡Borrando indices!")   
-    # except:
-    #     print("No es necesario borrar índices")
-    #     pass
+    ejectutaFichero(conn, "./static/drop_triggers.sql", "¡Borrando triggers!")
+    ejectutaFichero(conn, "./static/drop_functions.sql", "¡Borrando funciones!")
+    ejectutaFichero(conn, "./static/drop_procedures.sql", "¡Borrando procesos!")
+    ejectutaFichero(conn, "./static/drop_events.sql", "¡Borrando eventos!")
+    ejectutaFichero(conn, "./static/drop_views.sql", "¡Borrando vistas!")
+    ejectutaFichero(conn, "./static/drop_tables.sql", "¡Borrando tablas!")
+    try:
+        ejectutaFichero(conn, "./static/drop_indices.sql", "¡Borrando indices!")   
+    except:
+        print("No es necesario borrar índices")
+        pass
     
-    # ejectutaFichero(conn, "./static/create_tables.sql", "¡Creando tablas!")
-    # time.sleep(15)
-    # tablas = numTablas(conn)
+    ejectutaFichero(conn, "./static/create_tables.sql", "¡Creando tablas!")
+    time.sleep(15)
+    tablas = numTablas(conn)
 
-    # while(tablas < 18):
-    #     ejectutaFichero(conn, "./static/create_tables.sql", "Creación de tablas en progreso...")
-    #     time.sleep(15)
-    #     tablas = numTablas(conn)
+    while(tablas < 18):
+        ejectutaFichero(conn, "./static/create_tables.sql", "Creación de tablas en progreso...")
+        time.sleep(15)
+        tablas = numTablas(conn)
 
-    # ejectutaFichero(conn, "./static/create_triggers1.sql", "¡Primeros triggers creados!")   
-
+    ejectutaFichero(conn, "./static/create_triggers1.sql", "¡Primeros triggers creados!")   
+    conn.reconnect()
     datasetsPlusInserta(conn)
     #insertaTodo(db_user, db_name, db_pass)
 
@@ -288,6 +289,7 @@ def insertaDatasets(conn):
     # insertaFichero(db_user, db_name, db_pass, INSERTS3)
 
 def informacionBBDD(conn):
+    conn.reconnect()
     option = ""
     while option != "X":
         os.system(LIMPIAR)
