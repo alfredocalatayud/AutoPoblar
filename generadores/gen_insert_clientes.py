@@ -17,8 +17,8 @@ def main():
 		remove(K_SALIDA)
 		
 		
-	f = open(K_SALIDA, "x")
-	f = open(K_SALIDA, "a")
+	f = open(K_SALIDA, "x", encoding='utf-8')
+	f = open(K_SALIDA, "a", encoding='utf-8')
 
 	fichero_nifs = open(K_NIFS)
 	nifs = fichero_nifs.readlines()
@@ -56,3 +56,6 @@ def main():
 		
 	bar.finish()		
 	f.close();	
+
+if __name__ == "__main__":
+    main()

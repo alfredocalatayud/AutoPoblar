@@ -49,7 +49,7 @@ def main():
 
     len_nifs = get_len_file(K_NIFS)
 
-    with open(K_NIFS, 'r') as input_file, open(K_SALIDA, 'w', encoding='latin-1') as output_file:
+    with open(K_NIFS, 'r') as input_file, open(K_SALIDA, 'w', encoding='utf-8') as output_file:
         bar = Bar('Generando usuarios:', max=len_nifs)
         output_file.write(K_INSERT)
 

@@ -32,28 +32,39 @@ END;
 
 -- Calcula el ID de la siguiente línea que puede añadirse al pedido
 -- (ID de la última línea del pedido + 1)
-CREATE FUNCTION IF NOT EXISTS `id_linea_pedido`(idPedido INT, idCliente VARCHAR(256)) RETURNS INT
+CREATE FUNCTION IF NOT EXISTS `id_linea_pedido`(idPedido INT, idCliente VARBINARY(255)) RETURNS INT
 BEGIN
 	DECLARE maxID int;
-	SELECT MAX(lp.id) INTO maxID FROM linea_pedido AS lp, pedido AS p WHERE lp.id_pedido = idPedido AND p.nif_cliente = idCliente;
-	IF maxID IS NULL THEN
-  		SELECT 0 INTO maxID;
- 	END IF;
+	SELECT IFNULL(MAX(lp.id), 0) INTO maxID FROM linea_pedido AS lp, pedido AS p WHERE lp.id_pedido = idPedido AND p.nif_cliente = idCliente;
 RETURN (maxID + 1);
 END;
 
 -- Devuelve si el usuario indicado tiene un pedido con
 -- líneas en estado cesta o no.
-CREATE FUNCTION IF NOT EXISTS `tiene_cesta`(idCliente VARCHAR(256)) RETURNS BOOL
+CREATE FUNCTION IF NOT EXISTS `tiene_cesta`(idCliente VARBINARY(255)) RETURNS BOOL
 BEGIN
-RETURN (SELECT COUNT(*) FROM linea_pedido AS lp LEFT JOIN pedido AS p ON lp.id_pedido = p.id WHERE p.nif_cliente = idCliente AND lp.estado = 'Cesta') > 0;
+RETURN SELECT EXISTS (
+  SELECT 1
+  FROM linea_pedido AS lp, pedido AS p
+  WHERE lp.id_pedido = p.id
+    AND p.nif_cliente = idCliente
+    AND lp.estado = 'Cesta'
+);
 END;
 
 -- Devuelve el ID del pedido que representa la cesta del usuario indicado.
-CREATE FUNCTION IF NOT EXISTS `obtener_id_cesta`(idCliente VARCHAR(256)) RETURNS INT
+CREATE FUNCTION IF NOT EXISTS `obtener_id_cesta`(idCliente VARBINARY(255)) RETURNS INT
 BEGIN
 	DECLARE idCesta TYPE OF pedido.id;
-	SELECT DISTINCT p.id INTO idCesta FROM pedido AS p LEFT JOIN linea_pedido AS lp ON lp.id_pedido = p.id WHERE p.nif_cliente = idCliente AND lp.estado = 'Cesta';
+	SELECT p.id INTO idCesta
+		FROM pedido AS p
+		WHERE p.nif_cliente = idCliente
+		AND EXISTS (
+			SELECT 1
+			FROM linea_pedido AS lp
+			WHERE lp.id_pedido = p.id AND lp.estado = 'Cesta'
+		)
+		LIMIT 1;
 	RETURN idCesta;
 END;
 

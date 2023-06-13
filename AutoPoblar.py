@@ -7,6 +7,8 @@ import os
 from progress.bar import Bar
 from timeit import default_timer as timer
 from datetime import timedelta
+from tkinter import *
+from tkinter import messagebox
 
 from generadores import gen_insert_categorias, gen_insert_chats_archivados, gen_insert_chats, gen_insert_clientes, gen_insert_direcciones, gen_insert_empleados, gen_insert_lineas_pedidos
 from generadores import gen_insert_lista_producto, gen_insert_lista, gen_insert_mensajes_archivados, gen_insert_mensajes, gen_insert_pedido, gen_insert_productos, gen_insert_tarjetas
@@ -35,10 +37,6 @@ TITULO = """888b. w                                w    8                     db
 
 def run_query(querys, conn):
     cursor = conn.cursor()
-    # cursor.execute("SET NAMES utf8;")
-    # cursor.execute("SET     CHARACTER SET utf8;")
-    # cursor.execute("character set=latin1;")
-    cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
 
     bar = Bar('     Procesando', max=len(querys))
 
@@ -112,9 +110,14 @@ def insertar(conn, inserts):
         print('Insertando {}...'.format(tabla))
         sql_file = "./SQL/{}".format(tabla)
 
-        with open(sql_file, encoding="latin-1") as file:
-            # sql_commands = file.read().split(';')[:-1]
-            sql_commands = file.read().split(');')[:-1]
+        try:
+            with open(sql_file, encoding="utf-8") as file:
+                sql_commands = file.read().split(');')[:-1]
+        except:
+            print("problemas con la codificación")
+            with open(sql_file, encoding="utf-8", errors='replace') as file:
+                
+                sql_commands = file.read().split(');')[:-1]
 
         run_query(sql_commands, conn)
 
@@ -271,22 +274,65 @@ def generacionCompleta(conn):
     
     end = timer()
 
+    messagebox.showinfo("AutoPoblar", "Proceso terminado")
+
     print("Tiempo de ejecución: {}".format(timedelta(seconds=end-start)))
     input("GENERACIÓN FINALIZADA CON ÉXITO. Pulsa enter para cerrar.")
     os.system(LIMPIAR)
 
 def insertaDatasets(conn):
-    # insertar(db_user, db_name, db_pass, INSERTS1)
-    # insertar(db_user, db_name, db_pass, ["pedidos.sql"])
-    # insertar(db_user, db_name, db_pass, INSERTS2)
-    # insertar(db_user, db_name, db_pass, INSERTS3)
+    os.system(LIMPIAR)
+    print(TITULO)
+
+    start = timer()
+
+    print("+---------------------------+")
+    print("|    INSERTANDO DATASETS    |")
+    print("+---------------------------+")
+
+
+    ejectutaFichero(conn, "./static/drop_triggers.sql", "¡Borrando triggers!")
+    ejectutaFichero(conn, "./static/drop_functions.sql", "¡Borrando funciones!")
+    ejectutaFichero(conn, "./static/drop_procedures.sql", "¡Borrando procesos!")
+    ejectutaFichero(conn, "./static/drop_events.sql", "¡Borrando eventos!")
+    ejectutaFichero(conn, "./static/drop_views.sql", "¡Borrando vistas!")
+    ejectutaFichero(conn, "./static/drop_tables.sql", "¡Borrando tablas!")
+    try:
+        ejectutaFichero(conn, "./static/drop_indices.sql", "¡Borrando indices!")   
+    except:
+        print("No es necesario borrar índices")
+        pass
+    
+    ejectutaFichero(conn, "./static/create_tables.sql", "¡Creando tablas!")
+    time.sleep(15)
+    tablas = numTablas(conn)
+
+    while(tablas < 18):
+        ejectutaFichero(conn, "./static/create_tables.sql", "Creación de tablas en progreso...")
+        time.sleep(15)
+        tablas = numTablas(conn)
+
+    ejectutaFichero(conn, "./static/create_triggers1.sql", "¡Primeros triggers creados!")   
+    conn.reconnect()
 
     insertar(conn, INSERTS1 + ["pedidos.sql"] + INSERTS2 + INSERTS3)
 
-    # insertaFichero(db_user, db_name, db_pass, INSERTS1)
-    # insertaFichero(db_user, db_name, db_pass, ["pedidos.sql"])
-    # insertaFichero(db_user, db_name, db_pass, INSERTS2)
-    # insertaFichero(db_user, db_name, db_pass, INSERTS3)
+    ejectutaFichero(conn, "./static/create_triggers2.sql", "¡Resto de triggers creados!")
+    ejectutaFichero(conn, "./static/create_functions.sql", "¡Funciones creadas!")
+    ejectutaFichero(conn, "./static/create_procedures.sql", "¡Procesos creados!")
+    ejectutaFichero(conn, "./static/create_views.sql", "¡Vistas creadas!")
+    ejectutaFichero(conn, "./static/create_events.sql", "¡Eventos creados!")
+    ejectutaFichero(conn, "./static/create_indices.sql", "¡Índices creados!")
+
+    print("+---------------------------+")
+    print("|       FIN  INSERTADO      |")
+    print("+---------------------------+")
+    
+    end = timer()
+
+    print("Tiempo de ejecución: {}".format(timedelta(seconds=end-start)))
+    input("GENERACIÓN FINALIZADA CON ÉXITO. Pulsa enter para cerrar.")
+    os.system(LIMPIAR)
 
 def informacionBBDD(conn):
     conn.reconnect()
@@ -400,7 +446,6 @@ def menu():
                 continuar = input("\nRecuerda, antes de realizar este paso has de lanzar [3]. ¿Desea continuar? (S/n): ")
                 if continuar in ["S", "s", ""]:
                     insertaDatasets(conn)
-                    input("\n¡Información insertada con éxito! Pulsa enter para volver al menú...")
                     
             elif option == "5":
                 informacionBBDD(conn)

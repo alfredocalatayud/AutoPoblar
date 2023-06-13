@@ -22,7 +22,7 @@ def main():
     if path.exists('./static/nifs_transporte.txt'):
         remove('./static/nifs_transporte.txt')
 
-    with open(K_FICHERO_NIFS, 'w', encoding='latin-1') as output_file:
+    with open(K_FICHERO_NIFS, 'w', encoding='utf-8') as output_file:
         bar = Bar('Creando NIFs:', max=K_NIFS)
         for _ in range(K_NIFS):
             bar.next()
@@ -31,7 +31,7 @@ def main():
 
         bar.finish()
 
-    with open('./static/nifs_transporte.txt', 'w', encoding='latin-1') as output_file:
+    with open('./static/nifs_transporte.txt', 'w', encoding='utf-8') as output_file:
         bar = Bar('Creando NIFs transportes:', max=20)
         for _ in range(20):
             bar.next()
